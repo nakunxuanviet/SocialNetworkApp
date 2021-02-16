@@ -1,3 +1,4 @@
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +8,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SocialNetwork.API.Filters;
+using SocialNetwork.Application;
+using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Infrastructure;
+using SocialNetwork.Infrastructure.Persistence;
+using SocialNetwork.Infrastructure.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +33,26 @@ namespace SocialNetwork.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddApplication();
+            services.AddInfrastructure(Configuration);
 
-            services.AddControllers();
+            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+
+            services.AddHttpContextAccessor();
+
+            services.AddHealthChecks()
+                .AddDbContextCheck<ApplicationDbContext>();
+
+            services.AddControllers(options =>
+                options.Filters.Add(new ApiExceptionFilterAttribute()))
+                    .AddFluentValidation();
+
+            // Customise default API behaviour
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SocialNetwork.API", Version = "v1" });
@@ -44,10 +69,18 @@ namespace SocialNetwork.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SocialNetwork.API v1"));
             }
 
+            app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            if (!env.IsDevelopment())
+            {
+                app.UseSpaStaticFiles();
+            }
 
             app.UseRouting();
 
+            app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
