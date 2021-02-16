@@ -4,7 +4,7 @@ using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
-namespace SocialNetwork.Domain.Entities
+namespace SocialNetwork.Domain.Entities.TodoItems
 {
     public class TodoItem : Entity, IHasDomainEvent, IAuditableEntity, IDeleteEntity
     {
