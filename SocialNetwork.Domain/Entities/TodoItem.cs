@@ -14,7 +14,7 @@ namespace SocialNetwork.Domain.Entities
 
         public string Note { get; set; }
 
-        public PriorityLevel Priority { get; set; }
+        public int Priority { get; set; }
 
         public DateTime? Reminder { get; set; }
 
