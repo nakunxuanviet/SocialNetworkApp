@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SocialNetwork.Domain.Entities.Settings;
 
-namespace SocialNetwork.Infrastructure.Persistence.Configuration.SettingConfiguration
+namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations.SettingConfiguration
 {
     internal class SettingEntityTypeConfiguration : CommonPropertyConfiguration, IEntityTypeConfiguration<Setting>
     {

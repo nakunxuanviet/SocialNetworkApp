@@ -1,11 +1,6 @@
 ﻿using SocialNetwork.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
@@ -27,14 +22,14 @@ namespace SocialNetwork.Domain.Entities.Activities
         public string Description { get; set; }
 
         /// <summary>
-        /// Category
+        /// CategoryId
         /// </summary>
-        public string Category { get; set; }
+        public String Category { get; set; }
 
         /// <summary>
-        /// City
+        /// CityId
         /// </summary>
-        public string City { get; set; }
+        public String City { get; set; }
 
         /// <summary>
         /// Venue
@@ -47,7 +42,6 @@ namespace SocialNetwork.Domain.Entities.Activities
         public bool IsCancelled { get; set; }
 
         [IgnoreDataMember]
-        [DefaultValue(0)]
         public bool IsDeleted { get; set; }
 
         public string CreatedBy { get; set; }

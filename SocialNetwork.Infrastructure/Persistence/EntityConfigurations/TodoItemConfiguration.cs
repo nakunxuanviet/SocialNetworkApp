@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SocialNetwork.Domain.Entities.TodoItems;
 
-namespace SocialNetwork.Infrastructure.Persistence.Configuration
+namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations
 {
     public class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
     {

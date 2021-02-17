@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.SeedWork
 {
-    public interface IBaseRepository<T> where T : Entity
+    public interface IBaseRepository<T> where T : class
     {
         IQueryable<T> QueryAll();
 
