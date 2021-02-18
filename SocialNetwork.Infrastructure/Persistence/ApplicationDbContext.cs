@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Domain.Entities;
+using SocialNetwork.Domain.Entities.Activities;
+using SocialNetwork.Domain.Entities.Settings;
+using SocialNetwork.Domain.Entities.TodoItems;
 using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Identity;
 using System.Linq;
@@ -31,8 +33,11 @@ namespace SocialNetwork.Infrastructure.Persistence
             _dateTime = dateTime;
         }
 
+        public DbSet<Setting> Settings { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<TodoItem> TodoItems { get; set; }
+        //public DbSet<Category> Categories { get; set; }
+        //public DbSet<City> Cities { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SocialNetwork.Domain.SeedWork;
 
-namespace SocialNetwork.Infrastructure.Persistence.Configuration
+namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations
 {
     /// <summary>
     /// Common Property Configuration

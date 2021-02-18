@@ -10,4 +10,9 @@ A social networking application, the idea is almost similar to Instagram/Twister
 ### IdentityServer
 ### ReactJS (Typescript)
 
+## Hot features:
+### OpenAPI and API Versioning
+### Logging with Serilog and Seq
+
+
 ## Copyright © Tran Xuan Viet, 2021

@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace SocialNetwork.Application
 {
-    public static class DependencyInjection
+    public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {

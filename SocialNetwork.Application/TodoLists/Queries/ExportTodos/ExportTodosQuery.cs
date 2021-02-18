@@ -3,12 +3,11 @@ using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Application.TodoLists.Queries.ExportTodos;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CleanArchitecture.Application.TodoLists.Queries.ExportTodos
+namespace SocialNetwork.Application.TodoLists.Queries.ExportTodos
 {
     public class ExportTodosQuery : IRequest<ExportTodosVm>
     {

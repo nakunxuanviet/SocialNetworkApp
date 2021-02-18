@@ -17,6 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Activities\Commands\" />
+    <Folder Include="Activities\EventHandlers\" />
     <Folder Include="TodoLists\Commands\" />
   </ItemGroup>
 

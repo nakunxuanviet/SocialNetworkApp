@@ -1,5 +1,5 @@
 ﻿using SocialNetwork.Application.Common.Mappings;
-using SocialNetwork.Domain.Entities;
+using SocialNetwork.Domain.Entities.TodoItems;
 
 namespace SocialNetwork.Application.TodoLists.Queries.ExportTodos
 {

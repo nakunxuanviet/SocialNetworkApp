@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace SocialNetwork.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("v{version:apiVersion}/[controller]")]
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;
