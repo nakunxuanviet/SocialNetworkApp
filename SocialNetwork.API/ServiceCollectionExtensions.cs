@@ -32,17 +32,18 @@ namespace SocialNetwork.API
 
         public static IServiceCollection ConfigureCors(this IServiceCollection services)
         {
-            services.AddCors(options =>
+            services.AddCors(opt =>
             {
-                options.AddPolicy("CorsPolicy",
-                    builder =>
-                    {
-                        builder.WithOrigins("http://localhost:3000")
-                                            .AllowAnyHeader()
-                                            .AllowAnyMethod()
-                                            .WithExposedHeaders("Content-Disposition")
-                                            .AllowCredentials();
-                    });
+                opt.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .WithExposedHeaders("WWW-Authenticate", "Pagination")
+                        .WithExposedHeaders("Content-Disposition")
+                        .WithOrigins("http://localhost:3000");
+                });
             });
 
             return services;

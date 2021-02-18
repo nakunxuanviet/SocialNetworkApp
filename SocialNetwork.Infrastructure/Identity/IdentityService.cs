@@ -23,7 +23,7 @@ namespace SocialNetwork.Infrastructure.Identity
             return user.UserName;
         }
 
-        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
+        public async Task<(ObjectResult Result, string UserId)> CreateUserAsync(string userName, string password)
         {
             var user = new ApplicationUser
             {
@@ -36,7 +36,7 @@ namespace SocialNetwork.Infrastructure.Identity
             return (result.ToApplicationResult(), user.Id);
         }
 
-        public async Task<Result> DeleteUserAsync(string userId)
+        public async Task<ObjectResult> DeleteUserAsync(string userId)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
@@ -45,10 +45,10 @@ namespace SocialNetwork.Infrastructure.Identity
                 return await DeleteUserAsync(user);
             }
 
-            return Result.Success();
+            return ObjectResult.Success();
         }
 
-        public async Task<Result> DeleteUserAsync(ApplicationUser user)
+        public async Task<ObjectResult> DeleteUserAsync(ApplicationUser user)
         {
             var result = await _userManager.DeleteAsync(user);
 
