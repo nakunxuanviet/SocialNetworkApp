@@ -11,7 +11,8 @@ A social networking application, the idea is almost similar to Instagram/Twister
 ### ReactJS (Typescript)
 
 ## Hot features:
-### OpenAPI and Versioning for ASP.NET Core Web API
+### OpenAPI and API Versioning
+### Logging with Serilog and Seq
 
 
-### Copyright © Tran Xuan Viet, 2021
+## Copyright © Tran Xuan Viet, 2021
