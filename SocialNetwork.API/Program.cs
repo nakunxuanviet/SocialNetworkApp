@@ -46,7 +46,7 @@ namespace SocialNetwork.API
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-                    await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
+                    //await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
                     //await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                 }
 
@@ -55,7 +55,7 @@ namespace SocialNetwork.API
             catch (Exception ex)
             {
                 Log.Fatal(ex, "Program terminated unexpectedly ({ApplicationContext})!", AppName);
-                //Log.Fatal(ex, "An error occurred while migrating or seeding the database.");
+                Log.Fatal(ex, "An error occurred while migrating or seeding the database.");
             }
             finally
             {

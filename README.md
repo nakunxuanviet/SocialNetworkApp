@@ -10,4 +10,8 @@ A social networking application, the idea is almost similar to Instagram/Twister
 ### IdentityServer
 ### ReactJS (Typescript)
 
-## Copyright © Tran Xuan Viet, 2021
+## Hot features:
+### OpenAPI and Versioning for ASP.NET Core Web API
+
+
+### Copyright © Tran Xuan Viet, 2021
