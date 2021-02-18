@@ -41,6 +41,7 @@ namespace SocialNetwork.API
             services.AddRepositories();
             services.AddServices();
             services.AddCustomIdentity();
+            services.AddCustomLogger();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
 

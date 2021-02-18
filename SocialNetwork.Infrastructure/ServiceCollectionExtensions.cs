@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Files;
@@ -65,6 +66,14 @@ namespace SocialNetwork.Infrastructure
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+
+            return services;
+        }
+
+        public static IServiceCollection AddCustomLogger(this IServiceCollection services)
+        {
+            services.AddSingleton<ILogger>(Log.Logger);
+            services.AddSingleton<ILoggerManager, LoggerService>();
 
             return services;
         }
