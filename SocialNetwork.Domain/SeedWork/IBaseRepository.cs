@@ -8,17 +8,17 @@ namespace SocialNetwork.Domain.SeedWork
 {
     public interface IBaseRepository<T> where T : class
     {
-        IQueryable<T> QueryAll();
+        IQueryable<T> FindAll(bool trackChanges);
 
-        IQueryable<T> Query(Expression<Func<T, bool>> expression);
+        IQueryable<T> FindBy(Expression<Func<T, bool>> expression, bool trackChanges);
 
-        Task<T> AddAsync(T entity);
-
-        void AddRange(IEnumerable<T> entities);
+        void Create(T entity);
 
         void Update(T entity);
 
         void Delete(T entity);
+
+        void AddRange(IEnumerable<T> entities);
 
         void RemoveRange(IEnumerable<T> entities);
     }

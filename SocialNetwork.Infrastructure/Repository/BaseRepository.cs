@@ -11,48 +11,42 @@ namespace SocialNetwork.Infrastructure.Repository
 {
     public class BaseRepository<T> : IBaseRepository<T> where T : class
     {
-        protected readonly ApplicationDbContext _dbContext;
+        private readonly DbFactory _dbFactory;
+        private DbSet<T> _dbSet;
 
-        public BaseRepository(ApplicationDbContext dbContext)
+        protected DbSet<T> DbSet
         {
-            _dbContext = dbContext;
+            get => _dbSet ?? (_dbSet = _dbFactory.DbContext.Set<T>());
         }
 
-        public IQueryable<T> QueryAll()
+        public BaseRepository(DbFactory dbFactory)
         {
-            return _dbContext.Set<T>().AsNoTracking();
+            _dbFactory = dbFactory;
         }
 
-        public IQueryable<T> Query(Expression<Func<T, bool>> expression)
-        {
-            return _dbContext.Set<T>().Where(expression).AsNoTracking();
-        }
+        public IQueryable<T> FindAll(bool trackChanges) =>
+            !trackChanges ? DbSet.AsNoTracking() : DbSet;
 
-        public async Task<T> AddAsync(T entity)
-        {
-            await _dbContext.Set<T>().AddAsync(entity);
+        public IQueryable<T> FindBy(Expression<Func<T, bool>> expression, bool trackChanges) =>
+            !trackChanges ? DbSet.Where(expression).AsNoTracking() : DbSet.Where(expression);
 
-            return entity;
-        }
+        public void Create(T entity) => DbSet.Add(entity);
 
-        public void AddRange(IEnumerable<T> entities)
-        {
-            _dbContext.Set<T>().AddRange(entities);
-        }
-
-        public void Update(T entity)
-        {
-            _dbContext.Entry(entity).State = EntityState.Modified;
-        }
+        public void Update(T entity) => DbSet.Update(entity);
 
         public void Delete(T entity)
         {
-            _dbContext.Set<T>().Remove(entity);
+            if (typeof(IDeleteEntity).IsAssignableFrom(typeof(T)))
+            {
+                ((IDeleteEntity)entity).IsDeleted = true;
+                DbSet.Update(entity);
+            }
+            else
+                DbSet.Remove(entity);
         }
 
-        public void RemoveRange(IEnumerable<T> entities)
-        {
-            _dbContext.Set<T>().RemoveRange(entities);
-        }
+        public void AddRange(IEnumerable<T> entities) => DbSet.AddRange(entities);
+
+        public void RemoveRange(IEnumerable<T> entities) => DbSet.RemoveRange(entities);
     }
 }

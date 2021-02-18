@@ -4,10 +4,8 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.SeedWork
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
-        //Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
-        //Task<int> SaveEntitiesAsync(CancellationToken cancellationToken = default);
-        Task<int> CommitAsync();
+        Task<int> CommitChangeAsync();
     }
 }

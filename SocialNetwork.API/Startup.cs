@@ -37,7 +37,10 @@ namespace SocialNetwork.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplication();
-            services.AddInfrastructure(Configuration);
+            services.AddCustomDbContext(Configuration);
+            services.AddRepositories();
+            services.AddServices();
+            services.AddCustomIdentity();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
 
