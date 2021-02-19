@@ -1,4 +1,4 @@
-﻿using SocialNetwork.Domain.Enums;
+﻿using SocialNetwork.Domain.Entities.TodoItems.Enums;
 using SocialNetwork.Domain.Events;
 using SocialNetwork.Domain.SeedWork;
 using System;
@@ -14,7 +14,9 @@ namespace SocialNetwork.Domain.Entities.TodoItems
 
         public string Note { get; set; }
 
-        public int Priority { get; set; }
+        public int? Priority { get; set; }
+
+        public String PriorityLevelName => Priority.HasValue ? PriorityLevel.FromValue(Priority.Value).Name : "";
 
         public DateTime? Reminder { get; set; }
 

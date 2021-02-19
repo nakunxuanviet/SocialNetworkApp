@@ -1,8 +1,8 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace SocialNetwork.Domain.Enums
+namespace SocialNetwork.Domain.Entities.TodoItems.Enums
 {
-    public sealed class PriorityLevel : SmartEnum<PriorityLevel>
+    public class PriorityLevel : SmartEnum<PriorityLevel>
     {
         public static readonly PriorityLevel None = new PriorityLevel(nameof(None), 1);
         public static readonly PriorityLevel Low = new PriorityLevel(nameof(Low), 1);
