@@ -9,7 +9,7 @@ namespace SocialNetwork.API.Controllers
     [ApiController]
     [Route("v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
-    public abstract class ApiController : ControllerBase
+    public abstract class BaseApiController : ControllerBase
     {
         private IMediator _mediator;
 

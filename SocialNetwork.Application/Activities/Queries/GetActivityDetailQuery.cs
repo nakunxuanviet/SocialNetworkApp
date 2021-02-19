@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Activities.Models;
@@ -29,16 +30,16 @@ namespace SocialNetwork.Application.Activities.Queries
 
         public async Task<Result<ActivityDto>> Handle(GetActivityDetailQuery request, CancellationToken cancellationToken)
         {
-            var activity = await _context.Activities.FirstOrDefaultAsync(a => a.Id == request.Id);
+            var activity = await _context.Activities
+                    .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
+                    //new { currentUsername = _userAccessor.GetUsername() })
+                    .FirstOrDefaultAsync(x => x.Id == request.Id);
             if (activity == null)
             {
                 throw new NotFoundException(nameof(Activity), request.Id);
             }
 
-            // Mapper
-            var response = _mapper.Map<ActivityDto>(activity);
-
-            return Result<ActivityDto>.Success(response);
+            return Result<ActivityDto>.Success(activity);
         }
     }
 }

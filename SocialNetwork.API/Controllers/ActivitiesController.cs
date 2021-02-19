@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace SocialNetwork.API.Controllers
 {
     [ApiVersion("1.0")]
-    public class ActivitiesController : ApiController
+    public class ActivitiesController : BaseApiController
     {
         /// <summary>
         /// Get activities

@@ -16,7 +16,7 @@ namespace SocialNetwork.Application.Activities.Queries
     {
         public bool IsGoing { get; set; }
         public bool IsHost { get; set; }
-        public DateTime StartDate { get; set; } = DateTime.UtcNow;
+        public DateTime StartDate { get; set; }
     }
 
     public class GetActivitiesWithPaginationQueryHandler : IRequestHandler<GetActivitiesWithPaginationQuery, Result<PaginatedList<ActivityDto>>>
@@ -33,11 +33,15 @@ namespace SocialNetwork.Application.Activities.Queries
         public async Task<Result<PaginatedList<ActivityDto>>> Handle(GetActivitiesWithPaginationQuery request, CancellationToken cancellationToken)
         {
             var query = _context.Activities
-                   .Where(d => d.Date >= request.StartDate)
                    .OrderBy(d => d.Date)
                    .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
                    //new { currentUsername = _userAccessor.GetUsername() })
                    .AsQueryable();
+
+            if (request.StartDate != DateTime.MinValue)
+            {
+                query = query.Where(d => d.Date >= request.StartDate);
+            }
 
             return Result<PaginatedList<ActivityDto>>.Success(await query
                 .PaginatedListAsync(request.PageNumber, request.PageSize));
