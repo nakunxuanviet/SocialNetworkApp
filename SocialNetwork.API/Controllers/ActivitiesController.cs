@@ -33,7 +33,7 @@ namespace SocialNetwork.API.Controllers
         }
 
         /// <summary>
-        /// Create activity
+        /// Create a activity
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
@@ -44,7 +44,7 @@ namespace SocialNetwork.API.Controllers
         }
 
         /// <summary>
-        /// Update activity
+        /// Update a activity
         /// </summary>
         /// <param name="id"></param>
         /// <param name="command"></param>
@@ -57,7 +57,7 @@ namespace SocialNetwork.API.Controllers
         }
 
         /// <summary>
-        /// Delete activity
+        /// Delete a activity
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>

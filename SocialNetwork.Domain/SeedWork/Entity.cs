@@ -1,5 +1,8 @@
 ﻿namespace SocialNetwork.Domain.SeedWork
 {
+    /// <summary>
+    /// Primary key entity
+    /// </summary>
     public abstract class Entity
     {
         private int? _requestedHashCode;

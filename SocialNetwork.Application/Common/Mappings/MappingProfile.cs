@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace SocialNetwork.Application.Common.Mappings
 {
+    /// <summary>
+    /// Configure AutoMapper.
+    /// </summary>
     public class MappingProfile : Profile
     {
         public MappingProfile()
