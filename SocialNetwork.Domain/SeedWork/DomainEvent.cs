@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace SocialNetwork.Domain.SeedWork
 {
+    /// <summary>
+    /// Domain event
+    /// </summary>
     public interface IHasDomainEvent
     {
         public List<DomainEvent> DomainEvents { get; set; }

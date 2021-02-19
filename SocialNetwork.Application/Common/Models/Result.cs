@@ -1,28 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
 namespace SocialNetwork.Application.Common.Models
 {
-    public class Result
+    public class Result<T>
     {
-        internal Result(bool succeeded, IEnumerable<string> errors)
-        {
-            Succeeded = succeeded;
-            Errors = errors.ToArray();
-        }
+        public bool IsSuccess { get; set; }
+        public T Value { get; set; }
+        public string Error { get; set; }
 
-        public bool Succeeded { get; set; }
+        public static Result<T> Success(T value) => new Result<T> { IsSuccess = true, Value = value };
 
-        public string[] Errors { get; set; }
-
-        public static Result Success()
-        {
-            return new Result(true, new string[] { });
-        }
-
-        public static Result Failure(IEnumerable<string> errors)
-        {
-            return new Result(false, errors);
-        }
+        public static Result<T> Failure(string error) => new Result<T> { IsSuccess = false, Error = error };
     }
 }

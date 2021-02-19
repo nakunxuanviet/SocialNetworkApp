@@ -2,6 +2,9 @@
 
 namespace SocialNetwork.Domain.SeedWork
 {
+    /// <summary>
+    /// Audit entity
+    /// </summary>
     public interface IAuditableEntity
     {
         string CreatedBy { get; set; }

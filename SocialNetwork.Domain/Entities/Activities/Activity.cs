@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using SocialNetwork.Domain.Exceptions;
+using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Runtime.Serialization;
 
@@ -14,12 +15,29 @@ namespace SocialNetwork.Domain.Entities.Activities
         /// <summary>
         /// Date
         /// </summary>
-        public DateTime Date { get; set; }
+        private DateTime _date;
+
+        public DateTime Date
+        {
+            get => _date;
+            set
+            {
+                if (value == DateTime.MinValue)
+                    throw new DomainException("Date is required ot");
+                _date = value;
+            }
+        }
 
         /// <summary>
         /// Description
         /// </summary>
-        public string Description { get; set; }
+        private string _description;
+
+        public string Description
+        {
+            get => _description;
+            set => _description = string.IsNullOrEmpty(value) ? null : value;
+        }
 
         /// <summary>
         /// CategoryId
@@ -34,7 +52,13 @@ namespace SocialNetwork.Domain.Entities.Activities
         /// <summary>
         /// Venue
         /// </summary>
-        public string Venue { get; set; }
+        private string _venue;
+
+        public string Venue
+        {
+            get => _venue;
+            set => _venue = string.IsNullOrEmpty(value) ? null : value;
+        }
 
         /// <summary>
         /// Is Cancelled

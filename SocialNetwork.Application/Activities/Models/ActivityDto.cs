@@ -1,4 +1,6 @@
-﻿using System;
+﻿using SocialNetwork.Application.Common.Mappings;
+using SocialNetwork.Domain.Entities.Activities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +8,10 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Application.Activities.Models
 {
-    public class ActivityDto
+    public class ActivityDto : IMapFrom<Activity>
     {
+        public int Id { get; set; }
+
         public string Title { get; set; }
 
         public DateTime Date { get; set; }
