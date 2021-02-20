@@ -1,13 +1,12 @@
-﻿using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Entities.Activities;
 using SocialNetwork.Domain.Entities.Settings;
 using SocialNetwork.Domain.Entities.TodoItems;
 using SocialNetwork.Domain.SeedWork;
-using SocialNetwork.Infrastructure.Identity;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -15,18 +14,17 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<AppUser>, IApplicationDbContext
     {
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IDateTime _dateTime;
+        private readonly IUserAccessor _currentUserService;
+        private readonly ISystemTime _dateTime;
         private readonly IDomainEventService _domainEventService;
 
         public ApplicationDbContext(
             DbContextOptions options,
-            IOptions<OperationalStoreOptions> operationalStoreOptions,
-            ICurrentUserService currentUserService,
+            IUserAccessor currentUserService,
             IDomainEventService domainEventService,
-            IDateTime dateTime) : base(options, operationalStoreOptions)
+            ISystemTime dateTime) : base(options)
         {
             _currentUserService = currentUserService;
             _domainEventService = domainEventService;
@@ -69,6 +67,14 @@ namespace SocialNetwork.Infrastructure.Persistence
             builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
             base.OnModelCreating(builder);
+
+            builder.Entity<AppUser>().ToTable("Users");
+            builder.Entity<IdentityRole>().ToTable("Roles");
+            builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
+            builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+            builder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
+            builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
+            builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
         }
 
         private async Task DispatchEvents(CancellationToken cancellationToken)

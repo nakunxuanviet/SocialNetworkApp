@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace SocialNetwork.Application.Common.Models
+namespace SocialNetwork.Application.Common.Models.Paged
 {
     public class PagedList<T> : List<T>
     {

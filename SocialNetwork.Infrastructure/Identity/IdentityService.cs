@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Result;
+using SocialNetwork.Domain.Entities.Accounts;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -9,9 +10,9 @@ namespace SocialNetwork.Infrastructure.Identity
 {
     public class IdentityService : IIdentityService
     {
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
-        public IdentityService(UserManager<ApplicationUser> userManager)
+        public IdentityService(UserManager<AppUser> userManager)
         {
             _userManager = userManager;
         }
@@ -25,7 +26,7 @@ namespace SocialNetwork.Infrastructure.Identity
 
         public async Task<(ObjectResult Result, string UserId)> CreateUserAsync(string userName, string password)
         {
-            var user = new ApplicationUser
+            var user = new AppUser
             {
                 UserName = userName,
                 Email = userName,
@@ -48,7 +49,7 @@ namespace SocialNetwork.Infrastructure.Identity
             return ObjectResult.Success();
         }
 
-        public async Task<ObjectResult> DeleteUserAsync(ApplicationUser user)
+        public async Task<ObjectResult> DeleteUserAsync(AppUser user)
         {
             var result = await _userManager.DeleteAsync(user);
 

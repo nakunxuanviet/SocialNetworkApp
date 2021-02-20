@@ -1,6 +1,6 @@
 ﻿namespace SocialNetwork.Application.Common.Interfaces
 {
-    public interface ICurrentUserService
+    public interface IUserAccessor
     {
         string UserId { get; }
     }

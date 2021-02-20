@@ -11,12 +11,12 @@ namespace SocialNetwork.Application.Common.Behaviours
     {
         private readonly Stopwatch _timer;
         private readonly ILogger<TRequest> _logger;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IUserAccessor _currentUserService;
         private readonly IIdentityService _identityService;
 
         public PerformanceBehaviour(
             ILogger<TRequest> logger,
-            ICurrentUserService currentUserService,
+            IUserAccessor currentUserService,
             IIdentityService identityService)
         {
             _timer = new Stopwatch();

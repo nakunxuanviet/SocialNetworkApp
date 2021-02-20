@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Paged;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;

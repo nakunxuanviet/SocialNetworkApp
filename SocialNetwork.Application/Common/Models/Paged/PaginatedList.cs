@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.Application.Common.Models
+namespace SocialNetwork.Application.Common.Models.Paged
 {
     public class PaginatedList<T>
     {

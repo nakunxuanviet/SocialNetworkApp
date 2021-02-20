@@ -1,4 +1,4 @@
-namespace SocialNetwork.Application.Common.Models
+namespace SocialNetwork.Application.Common.Models.Result
 {
     public class Result<T>
     {

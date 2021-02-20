@@ -4,11 +4,11 @@ using System.Security.Claims;
 
 namespace SocialNetwork.Infrastructure.Services
 {
-    public class CurrentUserService : ICurrentUserService
+    public class UserAccessor : IUserAccessor
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public CurrentUserService(IHttpContextAccessor httpContextAccessor)
+        public UserAccessor(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }

@@ -1,16 +1,12 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using SocialNetwork.Infrastructure.Identity;
+using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.API
@@ -31,7 +27,7 @@ namespace SocialNetwork.API
                 Log.Information("Configuring web host ({ApplicationContext})...", AppName);
                 var host = CreateHostBuilder(args).Build();
 
-                Log.Information("Starting web host ({ApplicationContext})...", AppName);
+                Log.Information("Applying migrations ({ApplicationContext})...", AppName);
 
                 using (var scope = host.Services.CreateScope())
                 {
@@ -44,7 +40,7 @@ namespace SocialNetwork.API
                         context.Database.Migrate();
                     }
 
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var userManager = services.GetRequiredService<UserManager<AppUser>>();
 
                     await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
                     await ApplicationDbContextSeed.SeedSampleDataAsync(context);

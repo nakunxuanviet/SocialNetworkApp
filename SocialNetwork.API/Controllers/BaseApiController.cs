@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.API.Extensions;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Paged;
+using SocialNetwork.Application.Common.Models.Result;
 
 namespace SocialNetwork.API.Controllers
 {

@@ -1,0 +1,136 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using SocialNetwork.Application.Accounts.Models;
+using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Domain.Entities.Accounts;
+
+namespace SocialNetwork.Infrastructure.Services
+{
+    public class JwtService : IJwtService
+    {
+        private readonly JwtOptions _options;
+        private readonly JwtResetPasswordOptions _rsOptions;
+        private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly IConfiguration _config;
+
+        public JwtService(IOptions<JwtOptions> options, IOptions<JwtResetPasswordOptions> rsOptions,
+            IConfiguration config)
+        {
+            _options = options.Value;
+            _rsOptions = rsOptions.Value;
+            _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            _config = config;
+        }
+
+        public string CreateToken(AppUser user)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddMinutes(10),
+                SigningCredentials = creds
+            };
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return tokenHandler.WriteToken(token);
+        }
+
+        public RefreshToken GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
+        }
+
+        public string CreateWithRoles(AppUser user)
+        {
+            var currentTime = DateTime.UtcNow;
+            var expiredTime = DateTime.UtcNow.AddMinutes(_options.ExpiryMinutes);
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.IsAdmin.ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(_options.Issuer,
+                _options.Audience,
+                claims,
+                currentTime,
+                expiredTime,
+                creds);
+
+            return _jwtSecurityTokenHandler.WriteToken(jwt);
+        }
+
+        public bool IsValidResetPasswordToken(string token)
+        {
+            try
+            {
+                _jwtSecurityTokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_rsOptions.SecretKey)),
+
+                    ValidateIssuer = true,
+                    ValidIssuer = _rsOptions.Issuer,
+
+                    ValidateAudience = true,
+                    ValidAudience = _rsOptions.Audience,
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                }, out var _);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                // Validate Token fail
+                return false;
+            }
+        }
+
+        public string CreateResetPasswordToken()
+        {
+            var currentTime = DateTime.UtcNow;
+            var expiredTime = DateTime.UtcNow.AddMinutes(_rsOptions.ExpiryMinutes);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_rsOptions.SecretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var jwt = new JwtSecurityToken(_rsOptions.Issuer,
+                _rsOptions.Audience,
+                null,
+                currentTime,
+                expiredTime,
+                creds);
+
+            return _jwtSecurityTokenHandler.WriteToken(jwt);
+        }
+    }
+}

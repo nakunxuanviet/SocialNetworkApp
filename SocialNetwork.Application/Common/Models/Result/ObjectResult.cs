@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace SocialNetwork.Application.Common.Models
+namespace SocialNetwork.Application.Common.Models.Result
 {
     public class ObjectResult
     {
