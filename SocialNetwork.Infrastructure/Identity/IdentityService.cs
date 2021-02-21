@@ -10,9 +10,9 @@ namespace SocialNetwork.Infrastructure.Identity
 {
     public class IdentityService : IIdentityService
     {
-        private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public IdentityService(UserManager<AppUser> userManager)
+        public IdentityService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
@@ -26,7 +26,7 @@ namespace SocialNetwork.Infrastructure.Identity
 
         public async Task<(ObjectResult Result, string UserId)> CreateUserAsync(string userName, string password)
         {
-            var user = new AppUser
+            var user = new ApplicationUser
             {
                 UserName = userName,
                 Email = userName,
@@ -49,7 +49,7 @@ namespace SocialNetwork.Infrastructure.Identity
             return ObjectResult.Success();
         }
 
-        public async Task<ObjectResult> DeleteUserAsync(AppUser user)
+        public async Task<ObjectResult> DeleteUserAsync(ApplicationUser user)
         {
             var result = await _userManager.DeleteAsync(user);
 

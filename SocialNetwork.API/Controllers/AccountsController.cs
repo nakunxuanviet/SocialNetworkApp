@@ -26,16 +26,16 @@ namespace SocialNetwork.API.Controllers
     [ApiVersion("1.0")]
     public class AccountsController : BaseApiController
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IJwtService _tokenService;
         private readonly IConfiguration _config;
         private readonly HttpClient _httpClient;
         private readonly ISendGridEmailService _sendGridEmailSender;
         private readonly ISmtpMailService _emailService;
 
-        public AccountsController(UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager, IJwtService tokenService,
+        public AccountsController(UserManager<ApplicationUser> userManager,
+            SignInManager<ApplicationUser> signInManager, IJwtService tokenService,
             IConfiguration config, ISendGridEmailService sendGridEmailSender, ISmtpMailService emailService)
         {
             _sendGridEmailSender = sendGridEmailSender;
@@ -94,7 +94,7 @@ namespace SocialNetwork.API.Controllers
                 return ValidationProblem();
             }
 
-            var user = new AppUser
+            var user = new ApplicationUser
             {
                 DisplayName = registerDto.DisplayName,
                 Email = registerDto.Email,
@@ -117,15 +117,12 @@ namespace SocialNetwork.API.Controllers
             var mailInfo = new EmailRequest
             {
                 Subject = "Please verify email",
-                Recipients = new List<string>
-                {
-                    user.Email
-                },
+                Recipients = new List<string> { user.Email },
                 HtmlBody = message
             };
             _emailService.SendSmtpMail(mailInfo);
 
-            return Ok("Registration success - please verify email");
+            return Ok("Registration success. Please verify email.");
         }
 
         [AllowAnonymous]
@@ -162,10 +159,7 @@ namespace SocialNetwork.API.Controllers
             var mailInfo = new EmailRequest
             {
                 Subject = "Please verify email",
-                Recipients = new List<string>
-                {
-                    user.Email
-                },
+                Recipients = new List<string> { user.Email },
                 HtmlBody = message
             };
             _emailService.SendSmtpMail(mailInfo);
@@ -211,7 +205,7 @@ namespace SocialNetwork.API.Controllers
 
             if (user != null) return CreateUserObject(user);
 
-            user = new AppUser
+            user = new ApplicationUser
             {
                 DisplayName = (string)fbInfo.name,
                 Email = (string)fbInfo.email,
@@ -266,6 +260,7 @@ namespace SocialNetwork.API.Controllers
             await HttpContext.SignOutAsync();
 
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
+            //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
             // set this so UI rendering sees an anonymous user
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
@@ -290,9 +285,9 @@ namespace SocialNetwork.API.Controllers
             var link = _config["ResetPasswordUrl"] + "?userId=" + user.Id + "&username=" + user.UserName + "&token=" + jwt;
             _emailService.SendSmtpMail(new EmailRequest
             (
-                subject: "[Social Netword System] Reset password",
+                subject: "[Social Network] Reset password",
                 recipients: new List<string> { user.Email },
-                htmlBody: string.Format("Mật khẩu của bạn vừa được cài đặt lại. &lt;br/&gt;Click vào link dưới đây để thay đổi mật khẩu:&lt;br/&gt;&lt;br/&gt;{0}", link)
+                htmlBody: string.Format("Mật khẩu của bạn vừa được cài đặt lại. </br>Click vào link dưới đây để thay đổi mật khẩu: </br>{0}", link)
             ));
 
             return Ok("Reset password success");
@@ -313,15 +308,15 @@ namespace SocialNetwork.API.Controllers
                 return NotFound("Account not exist");
             }
 
-            //var tokenDb = await _userManager.GetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.ResetPasswordToken);
-            //if (tokenDb == null || tokenDb != model.Token)
-            //{
-            //    return NotFound("Token not exist");
-            //}
+            var tokenDb = await _userManager.GetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.ResetPasswordToken);
+            if (tokenDb == null || tokenDb != model.Token)
+            {
+                return NotFound("Token not exist");
+            }
 
             if (!_tokenService.IsValidResetPasswordToken(model.Token))
             {
-                return NotFound("Token not exits");
+                return NotFound("Token not exist");
             }
             var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
             if (result.Errors.Any())
@@ -331,7 +326,7 @@ namespace SocialNetwork.API.Controllers
             return Ok("Reset password success");
         }
 
-        private async Task SetRefreshToken(AppUser user)
+        private async Task SetRefreshToken(ApplicationUser user)
         {
             var refreshToken = _tokenService.GenerateRefreshToken();
 
@@ -347,7 +342,7 @@ namespace SocialNetwork.API.Controllers
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
 
-        private UserDto CreateUserObject(AppUser user)
+        private UserDto CreateUserObject(ApplicationUser user)
         {
             return new UserDto
             {

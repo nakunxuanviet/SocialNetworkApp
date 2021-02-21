@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : IdentityDbContext<AppUser>, IApplicationDbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
         private readonly IUserAccessor _currentUserService;
         private readonly ISystemTime _dateTime;
@@ -68,7 +68,7 @@ namespace SocialNetwork.Infrastructure.Persistence
 
             base.OnModelCreating(builder);
 
-            builder.Entity<AppUser>().ToTable("Users");
+            builder.Entity<ApplicationUser>().ToTable("Users");
             builder.Entity<IdentityRole>().ToTable("Roles");
             builder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
             builder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");

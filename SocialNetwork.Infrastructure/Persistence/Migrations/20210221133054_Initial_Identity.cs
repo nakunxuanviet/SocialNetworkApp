@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace SocialNetwork.Infrastructure.Persistence.Migrations
 {
-    public partial class InitialIdentity : Migration
+    public partial class Initial_Identity : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -147,7 +147,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Token = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Revoked = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -156,8 +156,8 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                 {
                     table.PrimaryKey("PK_RefreshToken", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshToken_Users_AppUserId",
-                        column: x => x.AppUserId,
+                        name: "FK_RefreshToken_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -249,9 +249,9 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_RefreshToken_AppUserId",
+                name: "IX_RefreshToken_UserId",
                 table: "RefreshToken",
-                column: "AppUserId");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",

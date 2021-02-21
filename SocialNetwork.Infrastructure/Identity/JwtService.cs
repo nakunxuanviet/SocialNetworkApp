@@ -4,32 +4,28 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SocialNetwork.Application.Accounts.Models;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Accounts;
 
-namespace SocialNetwork.Infrastructure.Services
+namespace SocialNetwork.Infrastructure.Identity
 {
     public class JwtService : IJwtService
     {
         private readonly JwtOptions _options;
         private readonly JwtResetPasswordOptions _rsOptions;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
-        private readonly IConfiguration _config;
 
-        public JwtService(IOptions<JwtOptions> options, IOptions<JwtResetPasswordOptions> rsOptions,
-            IConfiguration config)
+        public JwtService(IOptions<JwtOptions> options, IOptions<JwtResetPasswordOptions> rsOptions)
         {
             _options = options.Value;
             _rsOptions = rsOptions.Value;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            _config = config;
         }
 
-        public string CreateToken(AppUser user)
+        public string CreateToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -38,21 +34,23 @@ namespace SocialNetwork.Infrastructure.Services
                 new Claim(ClaimTypes.Email, user.Email),
             };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["TokenKey"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddMinutes(10),
+                Audience = _options.Audience,
+                Issuer = _options.Issuer,
+                Expires = DateTime.UtcNow.AddMinutes(_options.ExpiryMinutes),
                 SigningCredentials = creds
             };
 
-            var tokenHandler = new JwtSecurityTokenHandler();
+            //var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var token = _jwtSecurityTokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            return _jwtSecurityTokenHandler.WriteToken(token);
         }
 
         public RefreshToken GenerateRefreshToken()
@@ -63,7 +61,7 @@ namespace SocialNetwork.Infrastructure.Services
             return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
         }
 
-        public string CreateWithRoles(AppUser user)
+        public string CreateWithRoles(ApplicationUser user)
         {
             var currentTime = DateTime.UtcNow;
             var expiredTime = DateTime.UtcNow.AddMinutes(_options.ExpiryMinutes);
@@ -72,11 +70,16 @@ namespace SocialNetwork.Infrastructure.Services
                 new Claim(ClaimTypes.Name, user.UserName),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.IsAdmin.ToString())
+                new Claim("IsAdmin", user.IsAdmin.ToString()),
             };
 
+            //foreach (var role in user.roles)
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, role));
+            //}
+
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var jwt = new JwtSecurityToken(_options.Issuer,
                 _options.Audience,
@@ -121,7 +124,7 @@ namespace SocialNetwork.Infrastructure.Services
             var currentTime = DateTime.UtcNow;
             var expiredTime = DateTime.UtcNow.AddMinutes(_rsOptions.ExpiryMinutes);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_rsOptions.SecretKey));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var jwt = new JwtSecurityToken(_rsOptions.Issuer,
                 _rsOptions.Audience,

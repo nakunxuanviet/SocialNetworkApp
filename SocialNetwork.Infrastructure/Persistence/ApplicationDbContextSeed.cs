@@ -10,9 +10,9 @@ namespace SocialNetwork.Infrastructure.Persistence
 {
     public static class ApplicationDbContextSeed
     {
-        public static async Task SeedDefaultUserAsync(UserManager<AppUser> userManager)
+        public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager)
         {
-            var defaultUser = new AppUser { UserName = "admin", Email = "admin@gmail.com", DisplayName = "Administrator", IsAdmin = true, EmailConfirmed = true };
+            var defaultUser = new ApplicationUser { UserName = "admin", Email = "admin@gmail.com", DisplayName = "Administrator", IsAdmin = true, EmailConfirmed = true };
 
             if (userManager.Users.All(u => u.UserName != defaultUser.UserName))
             {
@@ -38,7 +38,7 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = true
                         //    }
                         //}
@@ -55,12 +55,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = false
                         //    },
                         //}
@@ -77,12 +77,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[2],
+                        //        ApplicationUser = users[2],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = false
                         //    },
                         //}
@@ -99,12 +99,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[2],
+                        //        ApplicationUser = users[2],
                         //        IsHost = false
                         //    },
                         //}
@@ -121,12 +121,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = false
                         //    },
                         //}
@@ -143,7 +143,7 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = true
                         //    }
                         //}
@@ -160,12 +160,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = false
                         //    },
                         //}
@@ -182,12 +182,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[2],
+                        //        ApplicationUser = users[2],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = false
                         //    },
                         //}
@@ -204,12 +204,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[0],
+                        //        ApplicationUser = users[0],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[2],
+                        //        ApplicationUser = users[2],
                         //        IsHost = false
                         //    },
                         //}
@@ -226,12 +226,12 @@ namespace SocialNetwork.Infrastructure.Persistence
                         //{
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[2],
+                        //        ApplicationUser = users[2],
                         //        IsHost = true
                         //    },
                         //    new ActivityAttendee
                         //    {
-                        //        AppUser = users[1],
+                        //        ApplicationUser = users[1],
                         //        IsHost = false
                         //    },
                         //}

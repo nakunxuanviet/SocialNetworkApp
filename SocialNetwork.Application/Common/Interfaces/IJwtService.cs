@@ -4,11 +4,11 @@ namespace SocialNetwork.Application.Common.Interfaces
 {
     public interface IJwtService
     {
-        string CreateToken(AppUser user);
+        string CreateToken(ApplicationUser user);
 
         RefreshToken GenerateRefreshToken();
 
-        string CreateWithRoles(AppUser user);
+        string CreateWithRoles(ApplicationUser user);
 
         bool IsValidResetPasswordToken(string token);
 

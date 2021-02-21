@@ -150,7 +150,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Domain.Entities.Accounts.AppUser", b =>
+            modelBuilder.Entity("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -246,9 +246,6 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AppUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("Expires")
                         .HasColumnType("datetime2");
 
@@ -258,9 +255,12 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("RefreshToken");
                 });
@@ -418,7 +418,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.AppUser", null)
+                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -427,7 +427,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.AppUser", null)
+                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -442,7 +442,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.AppUser", null)
+                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -451,7 +451,7 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.AppUser", null)
+                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -460,14 +460,14 @@ namespace SocialNetwork.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SocialNetwork.Domain.Entities.Accounts.RefreshToken", b =>
                 {
-                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.AppUser", "AppUser")
+                    b.HasOne("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", "User")
                         .WithMany("RefreshTokens")
-                        .HasForeignKey("AppUserId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("AppUser");
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SocialNetwork.Domain.Entities.Accounts.AppUser", b =>
+            modelBuilder.Entity("SocialNetwork.Domain.Entities.Accounts.ApplicationUser", b =>
                 {
                     b.Navigation("RefreshTokens");
                 });

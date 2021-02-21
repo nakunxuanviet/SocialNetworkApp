@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.API.Extensions;
 using SocialNetwork.Application.Activities.Commands;
 using SocialNetwork.Application.Activities.Queries;
 using System.Threading.Tasks;

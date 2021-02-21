@@ -68,6 +68,7 @@ namespace SocialNetwork.API
             //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
+            //app.UseCookiePolicy();
             app.UseRouting();
             app.UseCors("CorsPolicy");
 
