@@ -3,15 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Application", "SocialNetwork.Application\SocialNetwork.Application.csproj", "{E78D5D7C-A581-46A7-9C8A-67418CEB3FC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.Application", "SocialNetwork.Application\SocialNetwork.Application.csproj", "{E78D5D7C-A581-46A7-9C8A-67418CEB3FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Domain", "SocialNetwork.Domain\SocialNetwork.Domain.csproj", "{744D93F0-A38C-4C13-9F81-7681D9998133}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.Domain", "SocialNetwork.Domain\SocialNetwork.Domain.csproj", "{744D93F0-A38C-4C13-9F81-7681D9998133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.Infrastructure", "SocialNetwork.Infrastructure\SocialNetwork.Infrastructure.csproj", "{CA4CDA5A-8EE5-4B6B-B2BF-F606D05983D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.Infrastructure", "SocialNetwork.Infrastructure\SocialNetwork.Infrastructure.csproj", "{CA4CDA5A-8EE5-4B6B-B2BF-F606D05983D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.API", "SocialNetwork.API\SocialNetwork.API.csproj", "{789500B2-484B-4706-8485-E922F251C62A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialNetwork.WebUI", "SocialNetwork.WebUI\SocialNetwork.WebUI.csproj", "{C98FDF4A-E877-40C1-918A-280A53E57687}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SocialNetwork.API", "SocialNetwork.API\SocialNetwork.API.csproj", "{789500B2-484B-4706-8485-E922F251C62A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +33,6 @@ Global
 		{789500B2-484B-4706-8485-E922F251C62A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{789500B2-484B-4706-8485-E922F251C62A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{789500B2-484B-4706-8485-E922F251C62A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C98FDF4A-E877-40C1-918A-280A53E57687}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C98FDF4A-E877-40C1-918A-280A53E57687}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C98FDF4A-E877-40C1-918A-280A53E57687}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C98FDF4A-E877-40C1-918A-280A53E57687}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
