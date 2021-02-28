@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using AspNetCoreRateLimit;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SocialNetwork.API.Configures;
 using SocialNetwork.API.Filters;
 using SocialNetwork.API.Filters.SwaggerFilters;
 using SocialNetwork.Application.Accounts.Models;
@@ -16,6 +18,7 @@ using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Infrastructure.Identity;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -204,6 +207,37 @@ namespace SocialNetwork.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddRateLimit(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+
+            // This will set up the 500 requests per minute and 3,600 requests per hour that I already mentioned.
+            services.Configure<ClientRateLimitOptions>(options =>
+            {
+                options.GeneralRules = new List<RateLimitRule>
+                {
+                    new RateLimitRule
+                    {
+                        Endpoint = "*",
+                        Period = "1m",
+                        Limit = 500,
+                     },
+                    new RateLimitRule
+                     {
+                        Endpoint = "*",
+                        Period = "1h",
+                        Limit = 3600,
+                    }
+                };
+            });
+
+            services.AddSingleton<IRateLimitConfiguration, ApiRateLimitConfiguration>();
 
             return services;
         }
