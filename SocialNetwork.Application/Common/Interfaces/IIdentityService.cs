@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Application.Common.Models;
+﻿using SocialNetwork.Application.Common.Models.Result;
+using SocialNetwork.Domain.Entities.Accounts;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.Application.Common.Interfaces

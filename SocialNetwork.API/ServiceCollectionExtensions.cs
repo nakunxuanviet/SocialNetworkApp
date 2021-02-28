@@ -1,14 +1,25 @@
 ﻿using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using SocialNetwork.API.Filters;
 using SocialNetwork.API.Filters.SwaggerFilters;
+using SocialNetwork.Application.Accounts.Models;
+using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Infrastructure.Identity;
+using SocialNetwork.Infrastructure.Persistence;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.API
@@ -17,9 +28,13 @@ namespace SocialNetwork.API
     {
         public static IServiceCollection AddCustomController(this IServiceCollection services)
         {
-            services.AddControllers(options =>
-                options.Filters.Add(new ApiExceptionFilterAttribute()))
-                    .AddFluentValidation();
+            services.AddControllers(opt =>
+            {
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                opt.Filters.Add(new AuthorizeFilter(policy));
+
+                opt.Filters.Add(new ApiExceptionFilterAttribute());
+            }).AddFluentValidation();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -30,7 +45,7 @@ namespace SocialNetwork.API
             return services;
         }
 
-        public static IServiceCollection ConfigureCors(this IServiceCollection services)
+        public static IServiceCollection AddCors(this IServiceCollection services)
         {
             services.AddCors(opt =>
             {
@@ -45,6 +60,76 @@ namespace SocialNetwork.API
                         .WithOrigins("http://localhost:3000");
                 });
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddCustomIdentity(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddIdentityCore<ApplicationUser>(opt =>
+            {
+                opt.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(Convert.ToInt32(configuration["LockAccount:DefaultLockoutMinutes"]));
+                opt.Lockout.MaxFailedAccessAttempts = Convert.ToInt32(configuration["LockAccount:MaxFailedAccessAttempts"]);
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.SignIn.RequireConfirmedEmail = true;
+                opt.User.RequireUniqueEmail = false;
+            })
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddSignInManager<SignInManager<ApplicationUser>>()
+            .AddDefaultTokenProviders();
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            //.AddCookie(options =>
+            // {
+            //     options.Cookie.HttpOnly = true;
+            //     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            //     options.Cookie.SameSite = SameSiteMode.Lax;
+            // })
+            //.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+            //.AddCookie(IdentityConstants.ApplicationScheme)
+            .AddJwtBearer(opt =>
+            {
+                opt.RequireHttpsMetadata = false;
+                opt.SaveToken = true;
+                opt.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero
+                };
+                opt.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
+            });
+
+            services.AddAuthorization(opt =>
+            {
+                opt.AddPolicy("IsActivityHost", policy =>
+                {
+                    policy.Requirements.Add(new IsHostRequirement());
+                });
+            });
+
+            services.Configure<JwtOptions>(configuration.GetSection("Jwt"));
+            services.Configure<JwtResetPasswordOptions>(configuration.GetSection("ResetPasswordJwt"));
+
+            services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
+            services.AddTransient<IJwtService, JwtService>();
 
             return services;
         }
@@ -73,23 +158,29 @@ namespace SocialNetwork.API
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
-                    Description = "JWT Authorization header using token",
-                    //Scheme = "Bearer"
+                    Description = @"JWT Authorization header using the Bearer scheme.
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      Example: 'Bearer 12345abcdef'",
+                    Scheme = "Bearer"
                 });
+
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement()
-                  {
+                {
                     {
-                      new OpenApiSecurityScheme
-                      {
-                        Reference = new OpenApiReference
-                          {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                          }
-                        },
-                        new string[] {}
-                      }
-                    });
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            },
+                            Scheme = "oauth2",
+                            Name = "Bearer",
+                            In = ParameterLocation.Header
+                         },
+                            new string[] {}
+                    }
+                });
 
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

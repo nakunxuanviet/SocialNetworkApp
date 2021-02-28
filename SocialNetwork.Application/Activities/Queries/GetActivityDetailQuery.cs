@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Activities.Models;
 using SocialNetwork.Application.Common.Exceptions;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Result;
 using SocialNetwork.Domain.Entities.Activities;
 using System.Threading;
 using System.Threading.Tasks;

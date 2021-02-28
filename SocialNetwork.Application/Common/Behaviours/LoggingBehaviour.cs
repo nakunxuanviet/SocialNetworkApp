@@ -9,10 +9,10 @@ namespace SocialNetwork.Application.Common.Behaviours
     public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest>
     {
         private readonly ILogger _logger;
-        private readonly ICurrentUserService _currentUserService;
+        private readonly IUserAccessor _currentUserService;
         private readonly IIdentityService _identityService;
 
-        public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService, IIdentityService identityService)
+        public LoggingBehaviour(ILogger<TRequest> logger, IUserAccessor currentUserService, IIdentityService identityService)
         {
             _logger = logger;
             _currentUserService = currentUserService;

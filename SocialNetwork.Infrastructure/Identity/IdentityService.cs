@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Result;
+using SocialNetwork.Domain.Entities.Accounts;
 using System.Linq;
 using System.Threading.Tasks;
 

@@ -1,16 +1,13 @@
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SocialNetwork.API.Filters;
+using SocialNetwork.API.SignalR;
 using SocialNetwork.Application;
-using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Infrastructure;
 using SocialNetwork.Infrastructure.Persistence;
-using SocialNetwork.Infrastructure.Services;
 
 namespace SocialNetwork.API
 {
@@ -28,15 +25,16 @@ namespace SocialNetwork.API
         {
             services.AddApplication()
                 .AddCustomController()
-                .ConfigureCors()
+                .AddCors()
                 .AddCustomDbContext(Configuration)
                 .AddRepositories()
                 .AddServices()
-                .AddCustomIdentity()
+                .AddCustomIdentity(Configuration)
                 .AddCustomSwagger()
+                .AddEmail(Configuration)
                 .AddCustomLogger();
 
-            services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddSignalR();
 
             services.AddHttpContextAccessor();
 
@@ -67,23 +65,20 @@ namespace SocialNetwork.API
             }
 
             app.UseHealthChecks("/health");
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
-            if (!env.IsDevelopment())
-            {
-                app.UseSpaStaticFiles();
-            }
 
+            //app.UseCookiePolicy();
             app.UseRouting();
             app.UseCors("CorsPolicy");
 
             app.UseAuthentication();
-            app.UseIdentityServer();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }

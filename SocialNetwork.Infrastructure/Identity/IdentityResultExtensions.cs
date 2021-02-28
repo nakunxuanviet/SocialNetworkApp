@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using SocialNetwork.Application.Common.Models;
+using SocialNetwork.Application.Common.Models.Result;
 using System.Linq;
 
 namespace SocialNetwork.Infrastructure.Identity

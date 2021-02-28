@@ -1,8 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.API.Extensions;
 using SocialNetwork.Application.Activities.Commands;
-using SocialNetwork.Application.Activities.Models;
 using SocialNetwork.Application.Activities.Queries;
-using SocialNetwork.Application.Common.Models;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.API.Controllers
@@ -15,6 +15,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
         [HttpGet]
         public async Task<IActionResult> GetActivitiesWithPagination([FromQuery] GetActivitiesWithPaginationQuery query)
         {
@@ -26,6 +27,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActivity(int id)
         {
@@ -37,6 +39,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="command"></param>
         /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateActivityCommand command)
         {
@@ -49,6 +52,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="id"></param>
         /// <param name="command"></param>
         /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateActivityCommand command)
         {
@@ -61,6 +65,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

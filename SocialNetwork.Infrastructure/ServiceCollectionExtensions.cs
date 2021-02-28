@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.SeedWork;
+using SocialNetwork.Infrastructure.Email;
 using SocialNetwork.Infrastructure.Files;
 using SocialNetwork.Infrastructure.Identity;
 using SocialNetwork.Infrastructure.Persistence;
@@ -26,9 +27,11 @@ namespace SocialNetwork.Infrastructure
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                {
+                    //options.UseLazyLoadingProxies();
+                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
+                });
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
@@ -49,23 +52,10 @@ namespace SocialNetwork.Infrastructure
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IDomainEventService, DomainEventService>();
-            services.AddTransient<IDateTime, DateTimeService>();
-            services.AddTransient<IIdentityService, IdentityService>();
+            services.AddTransient<ISystemTime, SystemTimeService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
-
-            return services;
-        }
-
-        public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
-        {
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
+            services.AddSingleton<IUserAccessor, UserAccessor>();
+            services.AddTransient<IIdentityService, IdentityService>();
 
             return services;
         }
@@ -74,6 +64,20 @@ namespace SocialNetwork.Infrastructure
         {
             services.AddSingleton<ILogger>(Log.Logger);
             services.AddSingleton<ILoggerManager, LoggerService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddEmail(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Smtp
+            services.AddSingleton<IBodyHtmlGenerator, BodyHtmlGenerator>();
+            services.AddSingleton<IMailSender, MailSender>();
+            services.AddSingleton<ISmtpMailService, SmtpMailService>();
+
+            // SendGrid
+            services.Configure<SendGridEmailSenderOptions>(configuration.GetSection("SendGrid"));
+            services.AddScoped<ISendGridEmailService, SendGridEmailService>();
 
             return services;
         }
