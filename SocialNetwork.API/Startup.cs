@@ -32,6 +32,7 @@ namespace SocialNetwork.API
                 .AddCustomIdentity(Configuration)
                 .AddCustomSwagger()
                 .AddEmail(Configuration)
+                .AddRateLimit()
                 .AddCustomLogger();
 
             services.AddSignalR();

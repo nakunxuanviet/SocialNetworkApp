@@ -1,4 +1,5 @@
-﻿using FluentValidation.AspNetCore;
+﻿using AspNetCoreRateLimit;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using SocialNetwork.API.Configures;
 using SocialNetwork.API.Filters;
 using SocialNetwork.API.Filters.SwaggerFilters;
 using SocialNetwork.Application.Accounts.Models;
@@ -16,6 +18,7 @@ using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Infrastructure.Identity;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +36,7 @@ namespace SocialNetwork.API
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
                 opt.Filters.Add(new AuthorizeFilter(policy));
 
+                // Handle exceptions thrown by an action
                 opt.Filters.Add(new ApiExceptionFilterAttribute());
             }).AddFluentValidation();
 
@@ -78,9 +82,13 @@ namespace SocialNetwork.API
             .AddSignInManager<SignInManager<ApplicationUser>>()
             .AddDefaultTokenProviders();
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"]));
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            services.AddAuthentication(options =>
+            {
+                // Identity made Cookie authentication the default.
+                // However, now JWT Bearer Auth to be the default.
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
             //.AddCookie(options =>
             // {
             //     options.Cookie.HttpOnly = true;
@@ -91,25 +99,37 @@ namespace SocialNetwork.API
             //.AddCookie(IdentityConstants.ApplicationScheme)
             .AddJwtBearer(opt =>
             {
+                // Configure the Authority to the expected value for your authentication provider
+                // This ensures the token is appropriately validated
+                // options.Authority = /* TODO: Insert Authority URL here */;
+
                 opt.RequireHttpsMetadata = false;
                 opt.SaveToken = true;
                 opt.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecretKey"])),
                     ValidateIssuer = false,
                     ValidateAudience = false,
                     ValidateLifetime = true,
                     ClockSkew = TimeSpan.Zero
                 };
+
+                // We have to hook the OnMessageReceived event in order to
+                // allow the JWT authentication handler to read the access
+                // token from the query string when a WebSocket or
+                // Server-Sent Events request comes in.
                 opt.Events = new JwtBearerEvents
                 {
                     OnMessageReceived = context =>
                     {
                         var accessToken = context.Request.Query["access_token"];
+
+                        // If the request is for our hub...
                         var path = context.HttpContext.Request.Path;
                         if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
                         {
+                            // Read the token out of the query string
                             context.Token = accessToken;
                         }
                         return Task.CompletedTask;
@@ -187,6 +207,37 @@ namespace SocialNetwork.API
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddRateLimit(this IServiceCollection services)
+        {
+            services.AddMemoryCache();
+            services.AddSingleton<IClientPolicyStore, MemoryCacheClientPolicyStore>();
+            services.AddSingleton<IRateLimitCounterStore, MemoryCacheRateLimitCounterStore>();
+
+            // This will set up the 500 requests per minute and 3,600 requests per hour that I already mentioned.
+            services.Configure<ClientRateLimitOptions>(options =>
+            {
+                options.GeneralRules = new List<RateLimitRule>
+                {
+                    new RateLimitRule
+                    {
+                        Endpoint = "*",
+                        Period = "1m",
+                        Limit = 500,
+                     },
+                    new RateLimitRule
+                     {
+                        Endpoint = "*",
+                        Period = "1h",
+                        Limit = 3600,
+                    }
+                };
+            });
+
+            services.AddSingleton<IRateLimitConfiguration, ApiRateLimitConfiguration>();
 
             return services;
         }
