@@ -6,9 +6,9 @@ A social networking application, the idea is almost similar to Instagram/Twister
 - .NET core 5.0
 - CQRS, Domain Driven Design (DDD)
 - SignalR
-- EF Core 5
+- Entity Framework Core 5
 - Dapper
-- IdentityServer
+- Identity
 - SQL Server 2019
 - ReactJS (Typescript)
 
@@ -16,6 +16,8 @@ A social networking application, the idea is almost similar to Instagram/Twister
 - API Versioning
 - Logging with Serilog and Seq
 - API Validation using Fluent Validation
+- API RateLimit request
+- RefreshToken
 
 
 ### Copyright © Tran Xuan Viet, 2021
