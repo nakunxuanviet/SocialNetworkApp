@@ -2,7 +2,6 @@
 using SocialNetwork.Domain.Entities.Activities;
 using SocialNetwork.Domain.Entities.Settings;
 using SocialNetwork.Domain.Entities.TodoItems;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
