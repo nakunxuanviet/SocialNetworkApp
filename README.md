@@ -10,7 +10,7 @@ A social networking application, the idea is almost similar to Instagram/Twister
 - Dapper
 - Identity
 - SQL Server 2019
-- ReactJS (Typescript)
+- ReactJS 17 (Typescript)
 
 ## Hot features:
 - API Versioning

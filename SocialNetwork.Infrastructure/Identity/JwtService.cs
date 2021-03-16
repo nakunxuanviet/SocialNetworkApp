@@ -73,7 +73,8 @@ namespace SocialNetwork.Infrastructure.Identity
                 new Claim("IsAdmin", user.IsAdmin.ToString()),
             };
 
-            //foreach (var role in user.roles)
+            // Add roles as multiple claims
+            //foreach (var role in user.Roles)
             //{
             //    claims.Add(new Claim(ClaimTypes.Role, role));
             //}

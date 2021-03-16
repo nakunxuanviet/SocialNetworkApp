@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -60,6 +61,8 @@ namespace SocialNetwork.API
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerDocumentation();
             }
+
+            //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
             app.UseHealthChecks("/health");
             //app.UseHttpsRedirection();
