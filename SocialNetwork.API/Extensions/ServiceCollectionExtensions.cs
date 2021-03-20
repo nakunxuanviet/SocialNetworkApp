@@ -16,8 +16,8 @@ namespace SocialNetwork.API.Extensions
         {
             services.AddControllers(opt =>
             {
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                opt.Filters.Add(new AuthorizeFilter(policy));
+                //var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                //opt.Filters.Add(new AuthorizeFilter(policy));
 
                 // Handle exceptions thrown by an action
                 opt.Filters.Add(new ApiExceptionFilterAttribute());

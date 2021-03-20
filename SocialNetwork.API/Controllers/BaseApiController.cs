@@ -8,7 +8,7 @@ using SocialNetwork.Application.Common.Models.Result;
 namespace SocialNetwork.API.Controllers
 {
     [ApiController]
-    [Route("v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     [Produces("application/json")]
     public abstract class BaseApiController : ControllerBase
     {

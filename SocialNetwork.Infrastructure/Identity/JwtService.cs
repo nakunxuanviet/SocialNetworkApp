@@ -78,6 +78,11 @@ namespace SocialNetwork.Infrastructure.Identity
             //{
             //    claims.Add(new Claim(ClaimTypes.Role, role));
             //}
+            //var roles = await _userManager.GetRolesAsync(_user);
+            //foreach (var role in roles)
+            //{
+            //    claims.Add(new Claim(ClaimTypes.Role, role));
+            //}
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
