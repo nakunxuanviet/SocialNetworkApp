@@ -5,9 +5,10 @@ import { Activity } from "../../../app/models/activity";
 interface Props {
   activity: Activity;
 }
+
 export default function ActivityDetails({ activity }: Props) {
   return (
-    <Card>
+    <Card fluid>
       <Image
         src={`/assets/categoryImages/${activity.category}.jpg`}
         wrapped
