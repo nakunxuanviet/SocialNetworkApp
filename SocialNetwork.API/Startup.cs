@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SocialNetwork.API.Extensions;
 using SocialNetwork.API.SignalR;
 using SocialNetwork.Application;
 using SocialNetwork.Infrastructure;
@@ -25,12 +27,12 @@ namespace SocialNetwork.API
         {
             services.AddApplication()
                 .AddCustomController()
-                .AddCors()
+                .AddCustomCors()
                 .AddCustomDbContext(Configuration)
                 .AddRepositories()
                 .AddServices()
-                .AddCustomIdentity(Configuration)
-                .AddCustomSwagger()
+                .AddIdentityServices(Configuration)
+                .AddSwaggerDocumentation()
                 .AddEmail(Configuration)
                 .AddRateLimit()
                 .AddCustomLogger();
@@ -57,13 +59,10 @@ namespace SocialNetwork.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/1.0/swagger.json", "SocialNetwork.API v1.0");
-                    c.SwaggerEndpoint("/swagger/2.0/swagger.json", "SocialNetwork.API v2.0");
-                });
+                app.UseSwaggerDocumentation();
             }
+
+            //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
             app.UseHealthChecks("/health");
             //app.UseHttpsRedirection();

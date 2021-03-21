@@ -256,13 +256,13 @@ namespace SocialNetwork.API.Controllers
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
             await _userManager.RemoveAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken);
 
-            // delete authentication cookie
+            // Delete authentication cookie
             await HttpContext.SignOutAsync();
 
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             //await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            // set this so UI rendering sees an anonymous user
+            // Set this so UI rendering sees an anonymous user
             HttpContext.User = new ClaimsPrincipal(new ClaimsIdentity());
 
             return Ok("Logout successfully");
