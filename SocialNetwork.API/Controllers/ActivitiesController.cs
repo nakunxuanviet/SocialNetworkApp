@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialNetwork.API.Extensions;
 using SocialNetwork.Application.Activities.Commands;
+using SocialNetwork.Application.Activities.Models;
 using SocialNetwork.Application.Activities.Queries;
+using SocialNetwork.Application.Common.Models.Paged;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.API.Controllers
@@ -15,11 +18,12 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>
-        //[Authorize(Policy = "IsActivityHost")]
+        //[Authorize(Policy = "IsActivityHost")] 
         [HttpGet]
+        [ProducesResponseType(typeof(PaginatedList<ActivityDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetActivitiesWithPagination([FromQuery] GetActivitiesWithPaginationQuery query)
         {
-            return HandleResult(await Mediator.Send(query));
+            return HandleResult(await _mediator.Send(query));
         }
 
         /// <summary>
@@ -29,9 +33,10 @@ namespace SocialNetwork.API.Controllers
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")]
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ActivityDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetActivity(int id)
         {
-            return HandleResult(await Mediator.Send(new GetActivityDetailQuery { Id = id }));
+            return HandleResult(await _mediator.Send(new GetActivityDetailQuery { Id = id }));
         }
 
         /// <summary>
@@ -43,7 +48,7 @@ namespace SocialNetwork.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateActivityCommand command)
         {
-            return HandleResult(await Mediator.Send(command));
+            return HandleResult(await _mediator.Send(command));
         }
 
         /// <summary>
@@ -57,7 +62,7 @@ namespace SocialNetwork.API.Controllers
         public async Task<IActionResult> Update(int id, UpdateActivityCommand command)
         {
             command.Id = id;
-            return HandleResult(await Mediator.Send(command));
+            return HandleResult(await _mediator.Send(command));
         }
 
         /// <summary>
@@ -69,7 +74,7 @@ namespace SocialNetwork.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return HandleResult(await Mediator.Send(new DeleteActivityCommand { Id = id }));
+            return HandleResult(await _mediator.Send(new DeleteActivityCommand { Id = id }));
         }
     }
 }

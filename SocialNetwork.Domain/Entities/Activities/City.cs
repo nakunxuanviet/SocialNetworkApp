@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
-    public class City : Entity, IAuditableEntity, IDeleteEntity
+    public class City : BaseEntity, IAuditableEntity, IDeleteEntity
     {
         public string Name { get; set; }
         public Activity Activity { get; set; }

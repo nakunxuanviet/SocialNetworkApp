@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Settings
 {
-    public class Setting : Entity, IAuditableEntity, IDeleteEntity, IAggregateRoot
+    public class Setting : BaseEntity, IAuditableEntity, IDeleteEntity, IAggregateRoot
     {
         /// <summary>
         /// Key

@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace SocialNetwork.Domain.Entities.TodoItems
 {
-    public class TodoItem : Entity, IHasDomainEvent, IAuditableEntity, IDeleteEntity
+    public class TodoItem : BaseEntity, IHasDomainEvent, IAuditableEntity, IDeleteEntity
     {
         public int ListId { get; set; }
 

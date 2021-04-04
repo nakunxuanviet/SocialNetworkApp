@@ -3,7 +3,7 @@
     /// <summary>
     /// Primary key entity
     /// </summary>
-    public abstract class Entity
+    public abstract class BaseEntity
     {
         private int? _requestedHashCode;
         private int _Id;
@@ -27,7 +27,7 @@
 
         public override bool Equals(object obj)
         {
-            if (obj == null || !(obj is Entity))
+            if (obj == null || !(obj is BaseEntity))
                 return false;
 
             if (ReferenceEquals(this, obj))
@@ -36,7 +36,7 @@
             if (GetType() != obj.GetType())
                 return false;
 
-            Entity item = (Entity)obj;
+            BaseEntity item = (BaseEntity)obj;
 
             if (item.IsTransient() || IsTransient())
                 return false;
@@ -57,7 +57,7 @@
                 return base.GetHashCode();
         }
 
-        public static bool operator ==(Entity left, Entity right)
+        public static bool operator ==(BaseEntity left, BaseEntity right)
         {
             if (Equals(left, null))
                 return Equals(right, null) ? true : false;
@@ -65,7 +65,7 @@
                 return left.Equals(right);
         }
 
-        public static bool operator !=(Entity left, Entity right)
+        public static bool operator !=(BaseEntity left, BaseEntity right)
         {
             return !(left == right);
         }

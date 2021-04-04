@@ -12,9 +12,9 @@ namespace SocialNetwork.API.Controllers
     [Produces("application/json")]
     public abstract class BaseApiController : ControllerBase
     {
-        private IMediator _mediator;
+        private IMediator _mediatorInstance;
 
-        protected IMediator Mediator => _mediator ??= HttpContext.RequestServices.GetService<IMediator>();
+        protected IMediator _mediator => _mediatorInstance ??= HttpContext.RequestServices.GetService<IMediator>();
 
         protected ActionResult HandleResult<T>(Result<T> result)
         {

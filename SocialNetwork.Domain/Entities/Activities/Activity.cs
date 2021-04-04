@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
-    public class Activity : Entity, IAuditableEntity, IDeleteEntity
+    public class Activity : BaseEntity, IAuditableEntity, IDeleteEntity
     {
         /// <summary>
         /// Title
