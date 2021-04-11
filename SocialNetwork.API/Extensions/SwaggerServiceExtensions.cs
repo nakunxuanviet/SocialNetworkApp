@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SocialNetwork.API.Filters.SwaggerFilters;
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 
 namespace SocialNetwork.API.Extensions
@@ -13,23 +13,13 @@ namespace SocialNetwork.API.Extensions
     {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
-            services.AddSwaggerGen(c =>
+            services.AddSwaggerGen(options =>
             {
-                //Following code to avoid swagger generation error due to same method name in different versions.
-                c.ResolveConflictingActions(descriptions =>
-                {
-                    return descriptions.First();
-                });
-
-                c.SwaggerDoc("1.0", new OpenApiInfo { Title = "SocialNetwork.API", Version = "1.0" });
-                c.SwaggerDoc("2.0", new OpenApiInfo { Title = "SocialNetwork.API", Version = "2.0" });
-
-                // Remove param and replace version
-                c.OperationFilter<RemoveVersionFromParameter>();
-                c.DocumentFilter<ReplaceVersionWithExactValueInPath>();
+                // for further customization
+                options.OperationFilter<DefaultValuesFilter>();
 
                 // Configure security swagger
-                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
                     In = ParameterLocation.Header,
@@ -40,7 +30,7 @@ namespace SocialNetwork.API.Extensions
                     Scheme = "Bearer"
                 });
 
-                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
                 {
                     {
                         new OpenApiSecurityScheme
@@ -61,19 +51,23 @@ namespace SocialNetwork.API.Extensions
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                options.IncludeXmlComments(xmlPath);
             });
+            services.ConfigureOptions<ConfigureSwaggerOptions>();
 
             return services;
         }
 
-        public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app)
+        public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
             app.UseSwagger();
-            app.UseSwaggerUI(c =>
+
+            app.UseSwaggerUI(options =>
             {
-                c.SwaggerEndpoint("/swagger/1.0/swagger.json", "SocialNetwork.API v1.0");
-                c.SwaggerEndpoint("/swagger/2.0/swagger.json", "SocialNetwork.API v2.0");
+                foreach (var description in provider.ApiVersionDescriptions)
+                {
+                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                }
             });
 
             return app;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SocialNetwork.API.Extensions;
 using SocialNetwork.Application.Activities.Commands;
 using SocialNetwork.Application.Activities.Models;
 using SocialNetwork.Application.Activities.Queries;
@@ -8,7 +7,7 @@ using SocialNetwork.Application.Common.Models.Paged;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.API.Controllers
+namespace SocialNetwork.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     public class ActivitiesController : BaseApiController
@@ -19,6 +18,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="query"></param>
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")] 
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [ProducesResponseType(typeof(PaginatedList<ActivityDto>), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetActivitiesWithPagination([FromQuery] GetActivitiesWithPaginationQuery query)
@@ -32,6 +32,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")]
+        [MapToApiVersion("1.0")]
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(ActivityDto), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetActivity(int id)
@@ -45,6 +46,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")]
+        [MapToApiVersion("1.0")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateActivityCommand command)
         {
@@ -58,6 +60,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="command"></param>
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")]
+        [MapToApiVersion("1.0")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateActivityCommand command)
         {
@@ -71,6 +74,7 @@ namespace SocialNetwork.API.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         //[Authorize(Policy = "IsActivityHost")]
+        [MapToApiVersion("1.0")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

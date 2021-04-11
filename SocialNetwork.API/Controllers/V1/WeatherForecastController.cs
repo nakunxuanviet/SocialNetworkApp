@@ -3,13 +3,11 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace SocialNetwork.API.Controllers
+namespace SocialNetwork.API.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
-    [ApiVersion("2.0")]
     [Route("v{version:apiVersion}/[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -29,6 +27,7 @@ namespace SocialNetwork.API.Controllers
         /// Get list weather forecast
         /// </summary>
         /// <returns></returns>
+        [MapToApiVersion("1.0")]
         [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
@@ -37,24 +36,6 @@ namespace SocialNetwork.API.Controllers
             {
                 Date = DateTime.Now.AddDays(index),
                 TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
-
-        /// <summary>
-        /// Get weather forecast
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        [MapToApiVersion("2.0")]
-        public IEnumerable<WeatherForecast> GetV2()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 10).Select(index => new WeatherForecast
-            {
-                Date = DateTime.Now.AddDays(index),
-                TemperatureC = rng.Next(-20, 65),
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();

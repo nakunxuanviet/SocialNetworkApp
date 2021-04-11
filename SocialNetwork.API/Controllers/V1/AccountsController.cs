@@ -21,7 +21,7 @@ using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.Entities.Accounts;
 
-namespace SocialNetwork.API.Controllers
+namespace SocialNetwork.API.Controllers.V1
 {
     [ApiVersion("1.0")]
     public class AccountsController : BaseApiController
@@ -50,6 +50,7 @@ namespace SocialNetwork.API.Controllers
             _emailService = emailService;
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
@@ -79,6 +80,7 @@ namespace SocialNetwork.API.Controllers
             return Unauthorized("Invalid password");
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
@@ -125,6 +127,7 @@ namespace SocialNetwork.API.Controllers
             return Ok("Registration success. Please verify email.");
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("verify-email")]
         public async Task<IActionResult> VerifyEmail([FromQuery] string token, [FromQuery] string email)
@@ -140,6 +143,7 @@ namespace SocialNetwork.API.Controllers
             return Ok("Email confirmed - you can now login");
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpGet("resend-email-confirmation-link")]
         public async Task<IActionResult> ResendEmailConfirmationLink([FromQuery] string email)
@@ -160,13 +164,14 @@ namespace SocialNetwork.API.Controllers
             {
                 Subject = "Please verify email",
                 Recipients = new List<string> { user.Email },
-                HtmlBody = message 
+                HtmlBody = message
             };
             _emailService.SendSmtpMail(mailInfo);
 
             return Ok("Email verification link resent");
         }
 
+        [MapToApiVersion("1.0")]
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<UserDto>> GetCurrentUser()
@@ -178,6 +183,7 @@ namespace SocialNetwork.API.Controllers
             return CreateUserObject(user);
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("fbLogin")]
         public async Task<ActionResult<UserDto>> FacebookLogin(string accessToken)
@@ -230,6 +236,7 @@ namespace SocialNetwork.API.Controllers
             return CreateUserObject(user);
         }
 
+        [MapToApiVersion("1.0")]
         [Authorize]
         [HttpPost("refresh-token")]
         public async Task<ActionResult<UserDto>> RefreshToken()
@@ -249,6 +256,7 @@ namespace SocialNetwork.API.Controllers
             return CreateUserObject(user);
         }
 
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("logout")]
         public async Task<IActionResult> Logout([FromBody] LogoutModel model)
@@ -273,6 +281,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] EmailAccountDto model)
@@ -298,6 +307,7 @@ namespace SocialNetwork.API.Controllers
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        [MapToApiVersion("1.0")]
         [HttpPost("reset-new-password")]
         [AllowAnonymous]
         public async Task<IActionResult> ResetNewPassword([FromBody] ResetPasswordDto model)
