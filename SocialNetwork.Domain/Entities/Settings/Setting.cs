@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using NaKun.Arc.Domain.SeedWork;
+using SocialNetwork.Domain.SeedWork;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;

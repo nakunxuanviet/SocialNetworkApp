@@ -1,11 +1,7 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using NaKun.Arc.Domain.SeedWork;
+using SocialNetwork.Domain.SeedWork;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {

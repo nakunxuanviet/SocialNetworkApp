@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using NaKun.Arc.Domain.SeedWork;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;

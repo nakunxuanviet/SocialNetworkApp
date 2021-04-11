@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
+using NaKun.Arc.Domain.Exceptions;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
-using SocialNetwork.Domain.Exceptions;
 using System;
 using System.IO;
 using System.Linq;

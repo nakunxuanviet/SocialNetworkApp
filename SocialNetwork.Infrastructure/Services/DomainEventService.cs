@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using NaKun.Arc.Domain.Events;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Events;
-using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Threading.Tasks;
 

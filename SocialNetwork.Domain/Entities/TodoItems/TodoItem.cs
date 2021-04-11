@@ -1,4 +1,6 @@
-﻿using SocialNetwork.Domain.Entities.TodoItems.Enums;
+﻿using NaKun.Arc.Domain.Events;
+using NaKun.Arc.Domain.SeedWork;
+using SocialNetwork.Domain.Entities.TodoItems.Enums;
 using SocialNetwork.Domain.Events;
 using SocialNetwork.Domain.SeedWork;
 using System;

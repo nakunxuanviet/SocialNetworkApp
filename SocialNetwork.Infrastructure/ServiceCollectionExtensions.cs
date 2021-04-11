@@ -1,13 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Serilog;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Email;
 using SocialNetwork.Infrastructure.Files;
 using SocialNetwork.Infrastructure.Identity;
+using SocialNetwork.Infrastructure.Logging;
 using SocialNetwork.Infrastructure.Persistence;
 using SocialNetwork.Infrastructure.Repository;
 using SocialNetwork.Infrastructure.Services;
@@ -44,7 +44,7 @@ namespace SocialNetwork.Infrastructure
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IBaseRepository<>), typeof(BaseRepository<>));
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
 
             return services;
         }
@@ -62,8 +62,7 @@ namespace SocialNetwork.Infrastructure
 
         public static IServiceCollection AddCustomLogger(this IServiceCollection services)
         {
-            services.AddSingleton<ILogger>(Log.Logger);
-            services.AddSingleton<ILoggerManager, LoggerService>();
+            services.AddScoped(typeof(ILoggerManager<>), typeof(LoggerAdapter<>));
 
             return services;
         }

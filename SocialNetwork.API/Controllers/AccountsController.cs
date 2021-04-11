@@ -160,7 +160,7 @@ namespace SocialNetwork.API.Controllers
             {
                 Subject = "Please verify email",
                 Recipients = new List<string> { user.Email },
-                HtmlBody = message
+                HtmlBody = message 
             };
             _emailService.SendSmtpMail(mailInfo);
 

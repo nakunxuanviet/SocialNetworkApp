@@ -1,13 +1,8 @@
-﻿using AutoMapper;
-using MediatR;
-using SocialNetwork.Application.Common.Exceptions;
+﻿using MediatR;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Result;
 using SocialNetwork.Domain.Entities.Activities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 

@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.Exceptions;
+﻿using NaKun.Arc.Domain.Exceptions;
+using NaKun.Arc.Domain.SeedWork;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Runtime.Serialization;

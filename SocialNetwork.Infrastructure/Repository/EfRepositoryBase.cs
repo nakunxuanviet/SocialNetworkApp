@@ -1,25 +1,27 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SocialNetwork.Domain.SeedWork;
+using NaKun.Arc.Domain.BaseEntity;
+using NaKun.Arc.Domain.BaseRepository;
+using NaKun.Arc.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Repository
 {
-    public class BaseRepository<T> : IBaseRepository<T> where T : class
+    public class EfRepositoryBase<T, TId> : IEfRepositoryBase<T, TId> where T : class, IEntityBase<TId>
     {
         private readonly DbFactory _dbFactory;
         private DbSet<T> _dbSet;
 
         protected DbSet<T> DbSet
         {
-            get => _dbSet ?? (_dbSet = _dbFactory.DbContext.Set<T>());
+            //get => _dbSet ?? (_dbSet = _dbFactory.DbContext.Set<T>());
+            get => _dbSet ??= _dbFactory.DbContext.Set<T>();
         }
 
-        public BaseRepository(DbFactory dbFactory)
+        public EfRepositoryBase(DbFactory dbFactory)
         {
             _dbFactory = dbFactory;
         }
@@ -30,7 +32,7 @@ namespace SocialNetwork.Infrastructure.Repository
         public IQueryable<T> FindBy(Expression<Func<T, bool>> expression, bool trackChanges) =>
             !trackChanges ? DbSet.Where(expression).AsNoTracking() : DbSet.Where(expression);
 
-        public void Create(T entity) => DbSet.Add(entity);
+        public void Insert(T entity) => DbSet.Add(entity);
 
         public void Update(T entity) => DbSet.Update(entity);
 
