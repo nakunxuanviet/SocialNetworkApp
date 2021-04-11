@@ -1,4 +1,5 @@
-﻿using SocialNetwork.Domain.Entities.TodoItems;
+﻿using NaKun.Arc.Domain.Events;
+using SocialNetwork.Domain.Entities.TodoItems;
 using SocialNetwork.Domain.SeedWork;
 
 namespace SocialNetwork.Domain.Events

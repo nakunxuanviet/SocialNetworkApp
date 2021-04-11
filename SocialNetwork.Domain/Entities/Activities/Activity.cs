@@ -1,11 +1,12 @@
-﻿using SocialNetwork.Domain.Exceptions;
+﻿using NaKun.Arc.Domain.Exceptions;
+using NaKun.Arc.Domain.SeedWork;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
-    public class Activity : BaseEntity, IAuditableEntity, IDeleteEntity
+    public class Activity : Entity, IAuditableEntity, IDeleteEntity
     {
         /// <summary>
         /// Title

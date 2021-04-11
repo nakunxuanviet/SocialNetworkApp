@@ -1,11 +1,12 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using NaKun.Arc.Domain.SeedWork;
+using SocialNetwork.Domain.SeedWork;
 using System;
 using System.ComponentModel;
 using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Settings
 {
-    public class Setting : BaseEntity, IAuditableEntity, IDeleteEntity, IAggregateRoot
+    public class Setting : Entity, IAuditableEntity, IDeleteEntity, IAggregateRoot
     {
         /// <summary>
         /// Key
