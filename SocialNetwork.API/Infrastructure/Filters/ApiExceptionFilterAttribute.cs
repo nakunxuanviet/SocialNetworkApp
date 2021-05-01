@@ -37,6 +37,12 @@ namespace SocialNetwork.API.Infrastructure.Filters
                 return;
             }
 
+            if (type.Name == "DomainException")
+            {
+                HandleDomainException(context);
+                return;
+            }
+
             if (!context.ModelState.IsValid)
             {
                 HandleInvalidModelStateException(context);
@@ -44,6 +50,24 @@ namespace SocialNetwork.API.Infrastructure.Filters
             }
 
             HandleUnknownException(context);
+        }
+
+        private void HandleDomainException(ExceptionContext context)
+        {
+            var exception = context.Exception;
+
+            var details = new ValidationProblemDetails(new Dictionary<string, string[]> { { "Error", new[] { exception.Message } } })
+            {
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
+                Title = "One or more validation errors occurred.",
+                //Status = (int)HttpStatusCode.BadRequest,
+                //Instance = context.Request.Path,
+            };
+            //context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+            //result = JsonSerializer.Serialize(problemDetails);
+
+            context.Result = new BadRequestObjectResult(details);
+            context.ExceptionHandled = true;
         }
 
         private void HandleUnknownException(ExceptionContext context)

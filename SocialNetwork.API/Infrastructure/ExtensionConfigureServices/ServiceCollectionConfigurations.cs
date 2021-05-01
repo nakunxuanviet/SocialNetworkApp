@@ -21,7 +21,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
                 //opt.Filters.Add(new AuthorizeFilter(policy));
 
                 // Handle exceptions thrown by an action
-                //opt.Filters.Add(new ApiExceptionFilterAttribute());
+                opt.Filters.Add(new ApiExceptionFilterAttribute());
             }).AddFluentValidation().AddDataAnnotationsLocalization();
 
             // Customise default API behaviour

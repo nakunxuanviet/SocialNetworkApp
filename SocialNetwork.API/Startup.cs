@@ -5,6 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using SocialNetwork.API.Infrastructure.ExtensionConfigureServices;
+using SocialNetwork.API.Infrastructure.Extensions;
+using SocialNetwork.API.Infrastructure.Middlewares;
 using SocialNetwork.API.Infrastructure.SignalR;
 using SocialNetwork.Application;
 using SocialNetwork.Infrastructure;
@@ -55,6 +57,8 @@ namespace SocialNetwork.API
                 app.UseDeveloperExceptionPage();
                 app.UseSwaggerDocumentation(provider);
             }
+
+            //app.UseMiddleware<ApiExceptionHandlingMiddleware>();
 
             //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
