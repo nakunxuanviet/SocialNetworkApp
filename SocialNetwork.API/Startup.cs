@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Serilog;
+using Serilog.Ui.Web;
 using SocialNetwork.API.Infrastructure.ExtensionConfigureServices;
 using SocialNetwork.API.Infrastructure.Extensions;
 using SocialNetwork.API.Infrastructure.Middlewares;
@@ -40,6 +42,8 @@ namespace SocialNetwork.API
                 .AddRateLimit()
                 .AddCustomLogger();
 
+            services.AddConfigSerilogUI(Configuration);
+
             services.AddSignalR();
 
             services.AddHttpContextAccessor();
@@ -58,11 +62,15 @@ namespace SocialNetwork.API
                 app.UseSwaggerDocumentation(provider);
             }
 
+            app.UseSerilogRequestLogging();
+
             //app.UseMiddleware<ApiExceptionHandlingMiddleware>();
 
             //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
             app.UseRequestLocalization();
+
+            app.UseSerilogRequestLogging();
 
             app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
@@ -74,6 +82,10 @@ namespace SocialNetwork.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Default url to view log page is http://<your-app>/serilog-ui. If config RoutePrefix then http://<your-app>/logs
+            //app.UseSerilogUi();
+            app.UseSerilogUi(option => option.RoutePrefix = "logs");
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using NaKun.Arc.Domain.Exceptions;
 using SocialNetwork.Application.Common.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace SocialNetwork.API.Infrastructure.Filters
             {
                 { typeof(ValidationException), HandleValidationException },
                 { typeof(NotFoundException), HandleNotFoundException },
+                { typeof(DomainException), HandleDomainException },
             };
         }
 
@@ -37,11 +39,11 @@ namespace SocialNetwork.API.Infrastructure.Filters
                 return;
             }
 
-            if (type.Name == "DomainException")
-            {
-                HandleDomainException(context);
-                return;
-            }
+            //if (type.Name == "DomainException")
+            //{
+            //    HandleDomainException(context);
+            //    return;
+            //}
 
             if (!context.ModelState.IsValid)
             {
@@ -59,12 +61,8 @@ namespace SocialNetwork.API.Infrastructure.Filters
             var details = new ValidationProblemDetails(new Dictionary<string, string[]> { { "Error", new[] { exception.Message } } })
             {
                 Type = "https://tools.ietf.org/html/rfc7231#section-6.5.1",
-                Title = "One or more validation errors occurred.",
-                //Status = (int)HttpStatusCode.BadRequest,
-                //Instance = context.Request.Path,
+                Title = "Domain errors occurred."
             };
-            //context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-            //result = JsonSerializer.Serialize(problemDetails);
 
             context.Result = new BadRequestObjectResult(details);
             context.ExceptionHandled = true;
@@ -72,11 +70,13 @@ namespace SocialNetwork.API.Infrastructure.Filters
 
         private static void HandleUnknownException(ExceptionContext context)
         {
+            var exception = context.Exception;
             var details = new ProblemDetails
             {
                 Status = StatusCodes.Status500InternalServerError,
                 Title = "An error occurred while processing your request.",
-                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1"
+                Type = "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+                Detail = exception.Message
             };
 
             context.Result = new ObjectResult(details)

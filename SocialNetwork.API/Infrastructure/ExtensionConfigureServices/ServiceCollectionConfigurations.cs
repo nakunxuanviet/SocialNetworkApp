@@ -4,7 +4,10 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog.Ui.MsSqlServerProvider;
+using Serilog.Ui.Web;
 using SocialNetwork.API.Infrastructure.Filters;
 using System.Collections.Generic;
 using System.Globalization;
@@ -21,7 +24,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
                 //opt.Filters.Add(new AuthorizeFilter(policy));
 
                 // Handle exceptions thrown by an action
-                opt.Filters.Add(new ApiExceptionFilterAttribute());
+                //opt.Filters.Add(new ApiExceptionFilterAttribute());
             }).AddFluentValidation().AddDataAnnotationsLocalization();
 
             // Customise default API behaviour
@@ -121,6 +124,30 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
+
+            return services;
+        }
+
+        public static IServiceCollection AddConfigSerilogUI(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Ref: https://github.com/mo-esmp/serilog-ui
+            // Register the serilog UI services
+            services.AddSerilogUi(options => options
+                .EnableAuthorization(authOptions =>
+                {
+                    authOptions.AuthenticationType = AuthenticationType.Jwt;  // or AuthenticationType.Cookie
+                    authOptions.Usernames = new[] { "admin@gmail.com", "viet.tx@gmail.com" };
+                    //authOptions.Roles = new[] { "AdminRole" };
+                })
+                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"), "Logs"));
+
+            //services.AddSerilogUi(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), "Logs"));
+            // or
+            // services.AddSerilogUi(options => options.UseNpgSql("ConnectionString", "LogTableName"));
+            // or
+            // services.AddSerilogUi(options => options.UseMongoDb("ConnectionString", "DatabaseName", "CollectionName"))
+            // or
+            // services.AddSerilogUi(options => options.UseElasticSearchDb(endpoint: new System.Uri("http://localhost:9200"), indexName: "logging-index"))
 
             return services;
         }
