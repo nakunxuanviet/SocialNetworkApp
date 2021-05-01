@@ -5,7 +5,7 @@ using SocialNetwork.Application.Common.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace SocialNetwork.API.Infrastructure.Middlewares
+namespace SocialNetwork.API.Infrastructure.Filters
 {
     public class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     {

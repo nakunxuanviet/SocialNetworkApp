@@ -1,11 +1,15 @@
 ﻿using AspNetCoreRateLimit;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.API.Infrastructure.Middlewares;
+using SocialNetwork.API.Infrastructure.Filters;
 using System.Collections.Generic;
+using System.Globalization;
 
-namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
 {
     public static class ServiceCollectionConfigurations
     {
@@ -18,7 +22,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
 
                 // Handle exceptions thrown by an action
                 //opt.Filters.Add(new ApiExceptionFilterAttribute());
-            }).AddFluentValidation();
+            }).AddFluentValidation().AddDataAnnotationsLocalization();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -75,6 +79,48 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
             });
 
             services.AddSingleton<IRateLimitConfiguration, ApiRateLimitConfiguration>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddAndConfigureApiVersioning(this IServiceCollection services)
+        {
+            services.Configure<RouteOptions>(options => { options.LowercaseUrls = true; });
+
+            services.AddApiVersioning(setup =>
+            {
+                //setup.DefaultApiVersion = new ApiVersion(1, 0);
+                //setup.AssumeDefaultVersionWhenUnspecified = true;
+
+                // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
+                setup.ReportApiVersions = true;
+            });
+
+            services.AddVersionedApiExplorer(options =>
+            {
+                // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
+                // note: the specified format code will format the version as "'v'major[.minor][-status]"
+                options.GroupNameFormat = "'v'VVV";
+
+                // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
+                // can also be used to control the format of the API version in route templates
+                options.SubstituteApiVersionInUrl = true;
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddAndConfigureLocalization(this IServiceCollection services)
+        {
+            services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            var supportedCultures = new List<CultureInfo> { new("en"), new("vi") };
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture("vi");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             return services;
         }

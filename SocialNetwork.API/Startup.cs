@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SocialNetwork.API.Infrastructure.ExtensionConfigurations;
+using SocialNetwork.API.Infrastructure.ExtensionConfigureServices;
 using SocialNetwork.API.Infrastructure.SignalR;
 using SocialNetwork.Application;
 using SocialNetwork.Infrastructure;
@@ -27,6 +26,7 @@ namespace SocialNetwork.API
         {
             services.AddApplication()
                 .AddCustomController()
+                .AddAndConfigureLocalization()
                 //.AddRedisCache(Configuration)
                 .AddCustomCors()
                 .AddCustomDbContext(Configuration)
@@ -42,25 +42,7 @@ namespace SocialNetwork.API
 
             services.AddHttpContextAccessor();
 
-            services.AddRouting(options => options.LowercaseUrls = true);
-
-            services.AddApiVersioning(setup =>
-            {
-                setup.DefaultApiVersion = new ApiVersion(1, 0);
-                setup.AssumeDefaultVersionWhenUnspecified = true;
-                setup.ReportApiVersions = true;
-            });
-
-            services.AddVersionedApiExplorer(options =>
-            {
-                // add the versioned api explorer, which also adds IApiVersionDescriptionProvider service
-                // note: the specified format code will format the version as "'v'major[.minor][-status]"
-                options.GroupNameFormat = "'v'VVV";
-
-                // note: this option is only necessary when versioning by url segment. the SubstitutionFormat
-                // can also be used to control the format of the API version in route templates
-                options.SubstituteApiVersionInUrl = true;
-            });
+            services.AddAndConfigureApiVersioning();
 
             services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
         }
@@ -71,15 +53,16 @@ namespace SocialNetwork.API
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwaggerDocumentation(provider);
             }
 
             //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
+            app.UseRequestLocalization();
+
             app.UseHealthChecks("/health");
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
-            app.UseSwaggerDocumentation(provider);
 
             //app.UseCookiePolicy();
             app.UseRouting();

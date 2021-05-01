@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 
-namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations.Swagger
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices.Swagger
 {
     /// <summary>
     /// Configures the Swagger generation options.

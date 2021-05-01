@@ -13,7 +13,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
 {
     public static class IdentityServiceConfigurations
     {

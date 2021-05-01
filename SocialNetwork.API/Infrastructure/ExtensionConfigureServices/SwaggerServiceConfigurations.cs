@@ -3,15 +3,15 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SocialNetwork.API.Infrastructure.ExtensionConfigurations.Swagger;
-using SocialNetwork.API.Infrastructure.Middlewares;
+using SocialNetwork.API.Infrastructure.ExtensionConfigureServices.Swagger;
+using SocialNetwork.API.Infrastructure.Filters;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
 {
     public static class SwaggerServiceConfigurations
     {
@@ -23,6 +23,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
             {
                 // add a custom operation filter which sets default values
                 options.OperationFilter<SwaggerDefaultValues>();
+                options.OperationFilter<SwaggerLanguageHeader>();
 
                 // Configure security swagger
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
