@@ -21,13 +21,15 @@ namespace SocialNetwork.Application.Activities.Queries
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ICacheService _cacheService;
+        //private readonly ICacheService _cacheService;
 
-        public GetActivityDetailQueryHandler(IApplicationDbContext context, IMapper mapper, ICacheService cacheService)
+        public GetActivityDetailQueryHandler(IApplicationDbContext context,
+            //ICacheService cacheService,
+            IMapper mapper)
         {
             _context = context;
             _mapper = mapper;
-            _cacheService = cacheService;
+            //_cacheService = cacheService;
         }
 
         public async Task<Result<ActivityDto>> Handle(GetActivityDetailQuery request, CancellationToken cancellationToken)

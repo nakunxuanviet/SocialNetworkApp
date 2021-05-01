@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SocialNetwork.API.Filters.SwaggerFilters;
+using SocialNetwork.API.Extensions.Swagger;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
@@ -13,24 +16,24 @@ namespace SocialNetwork.API.Extensions
     {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {
+            services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
+
             services.AddSwaggerGen(options =>
             {
-                // for further customization
-                options.OperationFilter<DefaultValuesFilter>();
+                // add a custom operation filter which sets default values
+                options.OperationFilter<SwaggerDefaultValues>();
 
                 // Configure security swagger
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
+                    Description = "JWT Authorization header using the Bearer scheme.Example: \"Authorization: Bearer {token}\"",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
-                    Description = @"JWT Authorization header using the Bearer scheme.
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      Example: 'Bearer 12345abcdef'",
-                    Scheme = "Bearer"
+                    //Scheme = "Bearer"
                 });
 
-                options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
                     {
                         new OpenApiSecurityScheme
@@ -44,7 +47,7 @@ namespace SocialNetwork.API.Extensions
                             Name = "Bearer",
                             In = ParameterLocation.Header
                          },
-                            Array.Empty<string>()
+                        new List<string>()
                     }
                 });
 
@@ -53,21 +56,18 @@ namespace SocialNetwork.API.Extensions
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 options.IncludeXmlComments(xmlPath);
             });
-            services.ConfigureOptions<ConfigureSwaggerOptions>();
 
             return services;
         }
 
         public static IApplicationBuilder UseSwaggerDocumentation(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
         {
-            app.UseSwagger();
-
+            app.UseSwagger(options => { options.RouteTemplate = "api-docs/{documentName}/docs.json"; });
             app.UseSwaggerUI(options =>
             {
+                options.RoutePrefix = "api-docs";
                 foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                }
+                    options.SwaggerEndpoint($"/api-docs/{description.GroupName}/docs.json", description.GroupName.ToUpperInvariant());
             });
 
             return app;
