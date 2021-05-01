@@ -52,7 +52,7 @@ namespace SocialNetwork.API.Infrastructure.Filters
             HandleUnknownException(context);
         }
 
-        private void HandleDomainException(ExceptionContext context)
+        private static void HandleDomainException(ExceptionContext context)
         {
             var exception = context.Exception;
 
@@ -70,7 +70,7 @@ namespace SocialNetwork.API.Infrastructure.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleUnknownException(ExceptionContext context)
+        private static void HandleUnknownException(ExceptionContext context)
         {
             var details = new ProblemDetails
             {
@@ -101,7 +101,7 @@ namespace SocialNetwork.API.Infrastructure.Filters
             context.ExceptionHandled = true;
         }
 
-        private void HandleInvalidModelStateException(ExceptionContext context)
+        private static void HandleInvalidModelStateException(ExceptionContext context)
         {
             var details = new ValidationProblemDetails(context.ModelState)
             {

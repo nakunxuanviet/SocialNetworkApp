@@ -20,7 +20,12 @@
 
   <ItemGroup>
     <Compile Update="Resources\DisplayNameResource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
       <DependentUpon>DisplayNameResource.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Resources\DisplayNameResource.en.Designer.cs">
+      <DependentUpon>DisplayNameResource.en.resx</DependentUpon>
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
     </Compile>
@@ -32,13 +37,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\DisplayNameResource.resx">
-      <LastGenOutput>DisplayNameResource.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Resources\DisplayNameResource.en.resx">
+      <LastGenOutput>DisplayNameResource.en.Designer.cs</LastGenOutput>
       <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Resources\DisplayNameResource.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>DisplayNameResource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\DisplayNameResource.vi.resx">
       <LastGenOutput>DisplayNameResource.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
+      <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\ErrorMessageResource.resx">
       <LastGenOutput>ErrorMessageResource.Designer.cs</LastGenOutput>

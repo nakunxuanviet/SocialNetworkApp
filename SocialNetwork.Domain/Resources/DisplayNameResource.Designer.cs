@@ -61,11 +61,11 @@ namespace SocialNetwork.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Email.
+        ///   Looks up a localized string similar to First name.
         /// </summary>
-        public static string Email {
+        public static string FirstName {
             get {
-                return ResourceManager.GetString("Email", resourceCulture);
+                return ResourceManager.GetString("FirstName", resourceCulture);
             }
         }
     }

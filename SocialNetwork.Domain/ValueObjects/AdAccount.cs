@@ -19,7 +19,7 @@ namespace SocialNetwork.Domain.ValueObjects
             {
                 var index = accountString.IndexOf("\\", StringComparison.Ordinal);
                 account.Domain = accountString.Substring(0, index);
-                account.Name = accountString.Substring(index + 1);
+                account.Name = accountString[(index + 1)..];
             }
             catch (Exception ex)
             {

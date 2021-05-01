@@ -9,7 +9,7 @@ namespace SocialNetwork.Infrastructure.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private DbFactory _dbFactory;
+        private readonly DbFactory _dbFactory;
 
         public UnitOfWork(DbFactory dbFactory)
         {
@@ -18,7 +18,7 @@ namespace SocialNetwork.Infrastructure.Repository
 
         public Task<int> CommitChangeAsync(CancellationToken cancellationToken)
         {
-            return _dbFactory.DbContext.SaveChangesAsync();
+            return _dbFactory.DbContext.SaveChangesAsync(cancellationToken);
         }
     }
 

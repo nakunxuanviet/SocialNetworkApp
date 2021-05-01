@@ -46,7 +46,7 @@
         public static bool operator ==(EntityBase<TId> left, EntityBase<TId> right)
         {
             if (Equals(left, null))
-                return Equals(right, null) ? true : false;
+                return Equals(right, null);
             else
                 return left.Equals(right);
         }

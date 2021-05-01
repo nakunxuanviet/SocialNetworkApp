@@ -49,7 +49,7 @@ namespace SocialNetwork.Application.Activities.Queries
             var activity = await _context.Activities
                     .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
                     //new { currentUsername = _userAccessor.GetUsername() })
-                    .FirstOrDefaultAsync(x => x.Id == request.Id);
+                    .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken: cancellationToken);
             if (activity == null)
             {
                 throw new NotFoundException(nameof(Activity), request.Id);
