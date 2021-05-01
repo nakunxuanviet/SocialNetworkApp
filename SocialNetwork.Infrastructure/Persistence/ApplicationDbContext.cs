@@ -64,7 +64,7 @@ namespace SocialNetwork.Infrastructure.Persistence
             }
 
             // AuditTrail
-            OnBeforeSaveChanges(_currentUserService.UserId);
+            //OnBeforeSaveChanges(_currentUserService.UserId);
 
             int result = await base.SaveChangesAsync(cancellationToken);
 

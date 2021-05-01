@@ -1,10 +1,9 @@
-using System;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.SignalR;
 using SocialNetwork.Application.Comments.Commands;
 
-namespace SocialNetwork.API.SignalR
+namespace SocialNetwork.API.Infrastructure.SignalR
 {
     public class ChatHub : Hub
     {

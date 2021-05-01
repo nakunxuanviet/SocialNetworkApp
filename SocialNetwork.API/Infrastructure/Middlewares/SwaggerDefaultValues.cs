@@ -4,7 +4,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 using System.Text.Json;
 
-namespace SocialNetwork.API.Extensions.Swagger
+namespace SocialNetwork.API.Infrastructure.Middlewares
 {
     /// <summary>
     /// Represents the Swagger/Swashbuckle operation filter used to document the implicit API version parameter.

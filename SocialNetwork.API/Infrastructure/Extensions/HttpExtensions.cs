@@ -1,7 +1,7 @@
 using System.Text.Json;
 using Microsoft.AspNetCore.Http;
 
-namespace SocialNetwork.API.Extensions
+namespace SocialNetwork.API.Infrastructure.Extensions
 {
     public static class HttpExtensions
     {

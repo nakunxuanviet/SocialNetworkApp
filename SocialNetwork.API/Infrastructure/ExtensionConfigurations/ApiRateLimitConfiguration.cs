@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System;
 
-namespace SocialNetwork.API.Configures
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
 {
     public class ApiRateLimitConfiguration : RateLimitConfiguration
     {

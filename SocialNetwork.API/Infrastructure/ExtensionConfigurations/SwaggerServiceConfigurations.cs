@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using SocialNetwork.API.Extensions.Swagger;
+using SocialNetwork.API.Infrastructure.ExtensionConfigurations.Swagger;
+using SocialNetwork.API.Infrastructure.Middlewares;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 
-namespace SocialNetwork.API.Extensions
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
 {
-    public static class SwaggerServiceExtensions
+    public static class SwaggerServiceConfigurations
     {
         public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
         {

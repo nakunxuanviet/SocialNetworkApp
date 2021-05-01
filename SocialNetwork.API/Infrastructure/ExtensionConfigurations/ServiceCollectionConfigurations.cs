@@ -1,16 +1,13 @@
 ﻿using AspNetCoreRateLimit;
 using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.API.Configures;
-using SocialNetwork.API.Filters;
+using SocialNetwork.API.Infrastructure.Middlewares;
 using System.Collections.Generic;
 
-namespace SocialNetwork.API.Extensions
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
 {
-    public static class ServiceCollectionExtensions
+    public static class ServiceCollectionConfigurations
     {
         public static IServiceCollection AddCustomController(this IServiceCollection services)
         {
@@ -20,7 +17,7 @@ namespace SocialNetwork.API.Extensions
                 //opt.Filters.Add(new AuthorizeFilter(policy));
 
                 // Handle exceptions thrown by an action
-                opt.Filters.Add(new ApiExceptionFilterAttribute());
+                //opt.Filters.Add(new ApiExceptionFilterAttribute());
             }).AddFluentValidation();
 
             // Customise default API behaviour

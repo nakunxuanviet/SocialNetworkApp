@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
-using SocialNetwork.API.Extensions;
+using SocialNetwork.API.Infrastructure.Extensions;
 using SocialNetwork.Application.Common.Models.Paged;
 using SocialNetwork.Application.Common.Models.Result;
 

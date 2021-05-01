@@ -13,9 +13,9 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.API.Extensions
+namespace SocialNetwork.API.Infrastructure.ExtensionConfigurations
 {
-    public static class IdentityServiceExtensions
+    public static class IdentityServiceConfigurations
     {
         public static IServiceCollection AddIdentityServices(this IServiceCollection services, IConfiguration configuration)
         {
@@ -75,7 +75,7 @@ namespace SocialNetwork.API.Extensions
 
                         // If the request is for our hub...
                         var path = context.HttpContext.Request.Path;
-                        if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/chat")))
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
                         {
                             // Read the token out of the query string
                             context.Token = accessToken;
