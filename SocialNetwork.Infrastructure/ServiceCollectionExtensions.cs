@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.SeedWork;
+using SocialNetwork.Infrastructure.Cache.RedisCaching;
 using SocialNetwork.Infrastructure.Email;
 using SocialNetwork.Infrastructure.Files;
 using SocialNetwork.Infrastructure.Identity;
@@ -52,7 +53,7 @@ namespace SocialNetwork.Infrastructure
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
             services.AddScoped<IDomainEventService, DomainEventService>();
-            services.AddTransient<ISystemTime, SystemTimeService>();
+            services.AddTransient<ISystemDateTime, SystemDateTimeService>();
             services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
             services.AddSingleton<IUserAccessor, UserAccessor>();
             services.AddTransient<IIdentityService, IdentityService>();
@@ -77,6 +78,29 @@ namespace SocialNetwork.Infrastructure
             // SendGrid
             services.Configure<SendGridEmailSenderOptions>(configuration.GetSection("SendGrid"));
             services.AddScoped<ISendGridEmailService, SendGridEmailService>();
+
+            return services;
+        }
+
+        public static IServiceCollection AddRedisCache(this IServiceCollection services, IConfiguration configuration)
+        {
+            //Installing Redis Server: docker run -d -p 6379:6379 --name myredis redis
+
+            //using package Microsoft.Extensions.Caching.StackExchangeRedis
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = $"{configuration.GetValue<string>("Redis:Server")}:{configuration.GetValue<int>("Redis:Port")}";
+            });
+            services.AddSingleton<ICacheService, CacheService>();
+
+            //using package StackExchange.Redis
+            //services.AddSingleton<IConnectionMultiplexer>(c =>
+            //{
+            //    var configuration = ConfigurationOptions.Parse(config.GetConnectionString("Redis"), true);
+            //    return ConnectionMultiplexer.Connect(configuration);
+            //});
+
+            //services.AddSingleton<IResponseCacheService, ResponseCacheService>();
 
             return services;
         }

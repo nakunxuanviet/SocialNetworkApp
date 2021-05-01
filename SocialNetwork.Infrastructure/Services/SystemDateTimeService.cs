@@ -3,7 +3,7 @@ using System;
 
 namespace SocialNetwork.Infrastructure.Services
 {
-    public class SystemTimeService : ISystemTime
+    public class SystemDateTimeService : ISystemDateTime
     {
         public DateTime Now => DateTime.Now;
 

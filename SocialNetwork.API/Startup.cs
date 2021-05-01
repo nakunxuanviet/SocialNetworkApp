@@ -28,6 +28,7 @@ namespace SocialNetwork.API
         {
             services.AddApplication()
                 .AddCustomController()
+                //.AddRedisCache(Configuration)
                 .AddCustomCors()
                 .AddCustomDbContext(Configuration)
                 .AddRepositories()

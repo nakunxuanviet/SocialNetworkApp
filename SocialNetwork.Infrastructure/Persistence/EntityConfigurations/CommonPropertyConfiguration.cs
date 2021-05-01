@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using NaKun.Arc.Domain.SeedWork;
-using SocialNetwork.Domain.SeedWork;
 
 namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations
 {

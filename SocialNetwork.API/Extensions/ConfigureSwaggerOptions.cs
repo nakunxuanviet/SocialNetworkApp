@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
 
 namespace SocialNetwork.API.Extensions
 {
@@ -34,7 +35,20 @@ namespace SocialNetwork.API.Extensions
             var info = new OpenApiInfo()
             {
                 Title = "SocialNetwork.API",
-                Version = description.ApiVersion.ToString()
+                Version = description.ApiVersion.ToString(),
+                Description = "Social network backend API",
+                //TermsOfService = new Uri("https://example.com/terms"),
+                Contact = new OpenApiContact
+                {
+                    Name = "TranXuanViet",
+                    //Email = "viet.tx@outlook.com",
+                    Url = new Uri("https://facbook.com/"),
+                },
+                License = new OpenApiLicense()
+                {
+                    Name = "MIT License",
+                    Url = new Uri("https://opensource.org/licenses/MIT")
+                }
             };
 
             if (description.IsDeprecated)

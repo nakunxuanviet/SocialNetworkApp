@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace SocialNetwork.Domain.Entities.TodoItems.Enums
+namespace SocialNetwork.Domain.Entities.TodoItems
 {
     public class PriorityLevel : SmartEnum<PriorityLevel>
     {

@@ -2,7 +2,7 @@
 
 namespace SocialNetwork.Application.Common.Interfaces
 {
-    public interface ISystemTime
+    public interface ISystemDateTime
     {
         /// <summary>
         /// Get curent date time.

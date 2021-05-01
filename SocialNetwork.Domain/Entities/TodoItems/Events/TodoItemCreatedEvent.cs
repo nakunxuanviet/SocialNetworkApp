@@ -2,7 +2,7 @@
 using SocialNetwork.Domain.Entities.TodoItems;
 using SocialNetwork.Domain.SeedWork;
 
-namespace SocialNetwork.Domain.Events
+namespace SocialNetwork.Domain.Entities.TodoItems.Events
 {
     public class TodoItemCreatedEvent : DomainEvent
     {

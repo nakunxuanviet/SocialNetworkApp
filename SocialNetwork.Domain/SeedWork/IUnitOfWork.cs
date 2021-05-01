@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SocialNetwork.Domain.SeedWork
 {
@@ -8,6 +10,6 @@ namespace SocialNetwork.Domain.SeedWork
         /// Saves all changes made in this context to the database.
         /// </summary>
         /// <returns></returns>
-        Task<int> CommitChangeAsync();
+        Task<int> CommitChangeAsync(CancellationToken cancellationToken);
     }
 }

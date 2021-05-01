@@ -21,15 +21,29 @@ namespace SocialNetwork.Application.Activities.Queries
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ICacheService _cacheService;
 
-        public GetActivityDetailQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetActivityDetailQueryHandler(IApplicationDbContext context, IMapper mapper, ICacheService cacheService)
         {
             _context = context;
             _mapper = mapper;
+            _cacheService = cacheService;
         }
 
         public async Task<Result<ActivityDto>> Handle(GetActivityDetailQuery request, CancellationToken cancellationToken)
         {
+            //// TryGet data from Cache. If not Available pull from DB
+            //var cached = _cacheService.Get<Activity>(request.Id.ToString());
+            //if (cached != null) return cached;
+            //else
+            //{
+            //    // Get data from database
+            //    var result = new Result<ActivityDto>();
+
+            //    // insert into cache for future calls
+            //    return _cacheService.Set<Activity>(request.Id.ToString(), result);
+            //}
+
             var activity = await _context.Activities
                     .ProjectTo<ActivityDto>(_mapper.ConfigurationProvider)
                     //new { currentUsername = _userAccessor.GetUsername() })

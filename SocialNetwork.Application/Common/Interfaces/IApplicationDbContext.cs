@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Domain.Entities.Activities;
+using SocialNetwork.Domain.Entities.AuditLog;
 using SocialNetwork.Domain.Entities.Settings;
 using SocialNetwork.Domain.Entities.TodoItems;
 using System.Threading;
@@ -9,9 +10,11 @@ namespace SocialNetwork.Application.Common.Interfaces
 {
     public interface IApplicationDbContext
     {
+        DbSet<Audit> AuditLogs { get; set; }
         DbSet<Setting> Settings { get; set; }
         DbSet<Activity> Activities { get; set; }
         DbSet<TodoItem> TodoItems { get; set; }
+
         //DbSet<Category> Categories { get; set; }
         //DbSet<City> Cities { get; set; }
 
