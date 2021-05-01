@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.Exception
+namespace SocialNetwork.Common.ArcLayer.Domain.Exceptions
 {
     public class DomainException : Exception
     {
