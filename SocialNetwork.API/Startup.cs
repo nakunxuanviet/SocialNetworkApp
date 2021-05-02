@@ -13,6 +13,7 @@ using SocialNetwork.API.Infrastructure.Middlewares;
 using SocialNetwork.API.Infrastructure.SignalR;
 using SocialNetwork.Application;
 using SocialNetwork.Infrastructure;
+using SocialNetwork.Infrastructure.JobSchedules;
 using SocialNetwork.Infrastructure.Persistence;
 
 namespace SocialNetwork.API
@@ -92,6 +93,7 @@ namespace SocialNetwork.API
             app.UseSerilogUi(option => option.RoutePrefix = "logs");
 
             app.UseHangfireDashboard("/jobs");
+            HangfireJobScheduler.ScheduleRecurringClearLogJob(Configuration);
 
             app.UseEndpoints(endpoints =>
             {
