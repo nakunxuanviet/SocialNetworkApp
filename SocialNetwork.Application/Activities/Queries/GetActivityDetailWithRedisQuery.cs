@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Activities;
 using System.Threading;
@@ -30,7 +31,7 @@ namespace SocialNetwork.Application.Activities.Queries
             else
             {
                 // Get data from database
-                var result = await _context.Activities.FindAsync(request.Id);
+                var result = await _context.Activities.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
                 // insert into cache for future calls
                 return await _cacheService.SetAsync<Activity>(request.Id.ToString(), result);

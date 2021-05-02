@@ -21,8 +21,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SocialNetwork.Application\SocialNetwork.Application.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Cache\MemoryCaching\" />
-  </ItemGroup>
 </Project>
