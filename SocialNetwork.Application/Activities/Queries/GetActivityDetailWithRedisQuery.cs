@@ -15,9 +15,9 @@ namespace SocialNetwork.Application.Activities.Queries
     public class GetActivityDetailWithRedisQueryHandler : IRequestHandler<GetActivityDetailWithRedisQuery, Activity>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IRedisCacheService _cacheService;
+        private readonly ICacheService _cacheService;
 
-        public GetActivityDetailWithRedisQueryHandler(IRedisCacheService cacheService, IApplicationDbContext context)
+        public GetActivityDetailWithRedisQueryHandler(ICacheService cacheService, IApplicationDbContext context)
         {
             _cacheService = cacheService;
             _context = context;
@@ -25,16 +25,15 @@ namespace SocialNetwork.Application.Activities.Queries
 
         public async Task<Activity> Handle(GetActivityDetailWithRedisQuery request, CancellationToken cancellationToken)
         {
-            // TryGet data from Cache. If not Available pull from DB
-            var cached = await _cacheService.GetAsync<Activity>(request.Id.ToString());
-            if (cached != null) return cached;
+            var cached = _cacheService.TryGet<Activity>(request.Id.ToString(), out Activity result);
+            if (cached) return result;
             else
             {
                 // Get data from database
-                var result = await _context.Activities.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+                var data = await _context.Activities.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
 
                 // insert into cache for future calls
-                return await _cacheService.SetAsync<Activity>(request.Id.ToString(), result);
+                return _cacheService.Set<Activity>(request.Id.ToString(), data);
             }
         }
     }

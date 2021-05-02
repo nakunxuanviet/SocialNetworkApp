@@ -1,3 +1,4 @@
+using Hangfire;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -32,7 +33,9 @@ namespace SocialNetwork.API
                 .AddCustomController()
                 .AddAndConfigureLocalization()
                 .AddRedisCache(Configuration)
+                //.AddRepoPatternCachingHangfire(Configuration)
                 //.AddMemoryCache()
+                .AddConfigureHangfire(Configuration)
                 .AddCustomCors()
                 .AddCustomDbContext(Configuration)
                 .AddRepositories()
@@ -87,6 +90,8 @@ namespace SocialNetwork.API
             // Default url to view log page is http://<your-app>/serilog-ui. If config RoutePrefix then http://<your-app>/logs
             //app.UseSerilogUi();
             app.UseSerilogUi(option => option.RoutePrefix = "logs");
+
+            app.UseHangfireDashboard("/jobs");
 
             app.UseEndpoints(endpoints =>
             {

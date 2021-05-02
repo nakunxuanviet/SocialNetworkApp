@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Hangfire;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Application.Common.Interfaces;
+using SocialNetwork.Application.Common.Models.Cache;
 using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.SeedWork;
-using SocialNetwork.Infrastructure.Cache.RedisCaching;
+using SocialNetwork.Infrastructure.Cache;
 using SocialNetwork.Infrastructure.Email;
 using SocialNetwork.Infrastructure.Files;
 using SocialNetwork.Infrastructure.Identity;
@@ -90,7 +92,42 @@ namespace SocialNetwork.Infrastructure
             {
                 options.Configuration = $"{configuration.GetValue<string>("Redis:Server")}:{configuration.GetValue<int>("Redis:Port")}";
             });
-            services.AddSingleton<IRedisCacheService, RedisCacheService>();
+            services.Configure<CacheConfiguration>(configuration.GetSection("CacheConfiguration"));
+            services.AddSingleton<ICacheService, RedisCacheService>();
+
+            return services;
+        }
+
+        //Repository pattern with caching and hangfire
+        public static IServiceCollection AddRepoPatternCachingHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<CacheConfiguration>(configuration.GetSection("CacheConfiguration"));
+            //For In-Memory Caching
+            services.AddMemoryCache();
+            services.AddTransient<MemoryCacheService>();
+            services.AddTransient<RedisCacheService>();
+            services.AddTransient<Func<CacheTech, ICacheService>>(serviceProvider => key =>
+            {
+                switch (key)
+                {
+                    case CacheTech.Memory:
+                        return serviceProvider.GetService<MemoryCacheService>();
+
+                    case CacheTech.Redis:
+                        return serviceProvider.GetService<RedisCacheService>();
+
+                    default:
+                        return serviceProvider.GetService<MemoryCacheService>();
+                }
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection AddConfigureHangfire(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHangfire(x => x.UseSqlServerStorage(configuration.GetConnectionString("DefaultConnection")));
+            services.AddHangfireServer();
 
             return services;
         }

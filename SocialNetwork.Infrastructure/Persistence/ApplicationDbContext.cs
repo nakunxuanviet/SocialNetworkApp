@@ -28,6 +28,8 @@ namespace SocialNetwork.Infrastructure.Persistence
             _currentUserService = currentUserService;
             _domainEventService = domainEventService;
             _dateTime = dateTime;
+
+            //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
         public DbSet<Audit> AuditLogs { get; set; }
