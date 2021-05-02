@@ -1,27 +1,22 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using SocialNetwork.Application.Activities.Queries;
+using SocialNetwork.Domain.Entities.Activities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SocialNetwork.API.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Route("v{version:apiVersion}/[controller]")]
-    public class WeatherForecastController : ControllerBase
+    public class WeatherForecastController : BaseApiController
     {
         private static readonly string[] Summaries = new[]
         {
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         };
-
-        private readonly ILogger<WeatherForecastController> _logger;
-
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
-        {
-            _logger = logger;
-        }
 
         /// <summary>
         /// Get list weather forecast
@@ -39,6 +34,20 @@ namespace SocialNetwork.API.Controllers.V1
                 Summary = Summaries[rng.Next(Summaries.Length)]
             })
             .ToArray();
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("redis-get-list-sample")]
+        public async Task<ActionResult<List<Activity>>> GetAllActivitiesUsingRedisCache([FromQuery] GetAllActivitieslWithRedisCacheQuery query)
+        {
+            return await _mediator.Send(query);
+        }
+
+        [MapToApiVersion("1.0")]
+        [HttpGet("redis-get-single-sample")]
+        public async Task<ActionResult<Activity>> GetActivityByIdUsingRedisCache([FromQuery] GetActivityDetailWithRedisQuery query)
+        {
+            return await _mediator.Send(query);
         }
     }
 }

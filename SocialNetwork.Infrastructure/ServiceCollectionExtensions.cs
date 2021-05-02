@@ -86,21 +86,11 @@ namespace SocialNetwork.Infrastructure
         {
             //Installing Redis Server: docker run -d -p 6379:6379 --name myredis redis
 
-            //using package Microsoft.Extensions.Caching.StackExchangeRedis
             services.AddStackExchangeRedisCache(options =>
             {
                 options.Configuration = $"{configuration.GetValue<string>("Redis:Server")}:{configuration.GetValue<int>("Redis:Port")}";
             });
-            services.AddSingleton<ICacheService, CacheService>();
-
-            //using package StackExchange.Redis
-            //services.AddSingleton<IConnectionMultiplexer>(c =>
-            //{
-            //    var configuration = ConfigurationOptions.Parse(config.GetConnectionString("Redis"), true);
-            //    return ConnectionMultiplexer.Connect(configuration);
-            //});
-
-            //services.AddSingleton<IResponseCacheService, ResponseCacheService>();
+            services.AddSingleton<IRedisCacheService, RedisCacheService>();
 
             return services;
         }

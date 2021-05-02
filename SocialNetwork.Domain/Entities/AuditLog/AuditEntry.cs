@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace SocialNetwork.Domain.Entities.AuditLog
 {
@@ -29,10 +29,10 @@ namespace SocialNetwork.Domain.Entities.AuditLog
                 Type = AuditType.ToString(),
                 TableName = TableName,
                 DateTime = DateTime.Now,
-                PrimaryKey = JsonConvert.SerializeObject(KeyValues),
-                OldValues = OldValues.Count == 0 ? null : JsonConvert.SerializeObject(OldValues),
-                NewValues = NewValues.Count == 0 ? null : JsonConvert.SerializeObject(NewValues),
-                AffectedColumns = ChangedColumns.Count == 0 ? null : JsonConvert.SerializeObject(ChangedColumns)
+                PrimaryKey = JsonSerializer.Serialize(KeyValues),
+                OldValues = OldValues.Count == 0 ? null : JsonSerializer.Serialize(OldValues),
+                NewValues = NewValues.Count == 0 ? null : JsonSerializer.Serialize(NewValues),
+                AffectedColumns = ChangedColumns.Count == 0 ? null : JsonSerializer.Serialize(ChangedColumns)
             };
             return audit;
         }

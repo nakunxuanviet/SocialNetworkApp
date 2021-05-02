@@ -31,7 +31,7 @@ namespace SocialNetwork.API
             services.AddApplication()
                 .AddCustomController()
                 .AddAndConfigureLocalization()
-                //.AddRedisCache(Configuration)
+                .AddRedisCache(Configuration)
                 .AddCustomCors()
                 .AddCustomDbContext(Configuration)
                 .AddRepositories()
