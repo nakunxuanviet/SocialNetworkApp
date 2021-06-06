@@ -1,54 +1,49 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NaKun.Arc.Domain.BaseEntity;
-using NaKun.Arc.Domain.BaseRepository;
-using NaKun.Arc.Domain.SeedWork;
+using SocialNetwork.Domain.Interfaces;
+using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Repository
 {
-    public class EfRepositoryBase<T, TId> : IEfRepositoryBase<T, TId> where T : class, IEntityBase<TId>
+    public class EfRepositoryBase<T> : IRepositoryBase<T> where T : EntityBase
     {
-        private readonly DbFactory _dbFactory;
-        private DbSet<T> _dbSet;
+        private readonly DbSet<T> _dbSet;
 
-        protected DbSet<T> DbSet
+        public EfRepositoryBase(ApplicationDbContext dbContext)
         {
-            //get => _dbSet ?? (_dbSet = _dbFactory.DbContext.Set<T>());
-            get => _dbSet ??= _dbFactory.DbContext.Set<T>();
+            _dbSet = dbContext.Set<T>();
         }
 
-        public EfRepositoryBase(DbFactory dbFactory)
-        {
-            _dbFactory = dbFactory;
-        }
-
-        public IQueryable<T> FindAll(bool trackChanges) =>
-            !trackChanges ? DbSet.AsNoTracking() : DbSet;
+        public IQueryable<T> FindAll(bool trackChanges) => !trackChanges ? _dbSet.AsNoTracking() : _dbSet;
 
         public IQueryable<T> FindBy(Expression<Func<T, bool>> expression, bool trackChanges) =>
-            !trackChanges ? DbSet.Where(expression).AsNoTracking() : DbSet.Where(expression);
+            !trackChanges ? _dbSet.Where(expression).AsNoTracking() : _dbSet.Where(expression);
 
-        public void Insert(T entity) => DbSet.Add(entity);
-
-        public void Update(T entity) => DbSet.Update(entity);
-
-        public void Delete(T entity)
+        public async Task<T> InsertAsync(T entity)
         {
-            if (typeof(IDeleteEntity).IsAssignableFrom(typeof(T)))
-            {
-                ((IDeleteEntity)entity).IsDeleted = true;
-                DbSet.Update(entity);
-            }
-            else
-                DbSet.Remove(entity);
+            await _dbSet.AddAsync(entity);
+            return entity;
         }
 
-        public void AddRange(IEnumerable<T> entities) => DbSet.AddRange(entities);
+        public Task<T> UpdateAsync(T entity)
+        {
+            _dbSet.Update(entity);
+            return Task.FromResult(entity);
+        }
 
-        public void RemoveRange(IEnumerable<T> entities) => DbSet.RemoveRange(entities);
+        public Task<bool> DeleteAsync(T entity)
+        {
+            _dbSet.Remove(entity);
+            return Task.FromResult(true);
+        }
+
+        public void AddRange(IEnumerable<T> entities) => _dbSet.AddRange(entities);
+
+        public void DeleteRange(IEnumerable<T> entities) => _dbSet.RemoveRange(entities);
     }
 }

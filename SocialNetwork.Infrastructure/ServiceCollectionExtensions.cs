@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Cache;
 using SocialNetwork.Application.Common.Models.Emails;
+using SocialNetwork.Domain.Interfaces;
 using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Cache;
 using SocialNetwork.Infrastructure.Email;
@@ -38,8 +39,6 @@ namespace SocialNetwork.Infrastructure
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
-            services.AddScoped<Func<ApplicationDbContext>>((provider) => () => provider.GetService<ApplicationDbContext>());
-            services.AddScoped<DbFactory>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
@@ -47,7 +46,7 @@ namespace SocialNetwork.Infrastructure
 
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
+            services.AddScoped(typeof(IRepositoryBase<>), typeof(EfRepositoryBase<>));
 
             return services;
         }

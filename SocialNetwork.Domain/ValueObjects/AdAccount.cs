@@ -1,5 +1,5 @@
-﻿using NaKun.Arc.Domain.SeedWork;
-using SocialNetwork.Domain.Exceptions;
+﻿using SocialNetwork.Domain.Exceptions;
+using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 

@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using NaKun.Arc.Domain.Exceptions;
 using SocialNetwork.Application.Common.Exceptions;
+using SocialNetwork.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 

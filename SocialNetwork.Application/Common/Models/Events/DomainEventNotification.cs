@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using NaKun.Arc.Domain.Events;
+using SocialNetwork.Domain.SeedWork;
 
 namespace SocialNetwork.Application.Common.Models.Events
 {

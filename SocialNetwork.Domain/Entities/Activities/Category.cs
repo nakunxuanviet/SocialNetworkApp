@@ -1,11 +1,10 @@
-﻿using NaKun.Arc.Domain.SeedWork;
-using SocialNetwork.Domain.SeedWork;
+﻿using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
-    public class Category : Entity, IAuditableEntity, IDeleteEntity
+    public class Category : EntityBase, IAuditableEntity, IDeleteEntity
     {
         public string Name { get; set; }
         public Activity Activity { get; set; }

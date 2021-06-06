@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.SeedWork
+namespace SocialNetwork.Domain.SeedWork
 {
     /// <summary>
     /// Audit entity

@@ -1,13 +1,11 @@
-﻿using NaKun.Arc.Domain.Events;
-using NaKun.Arc.Domain.SeedWork;
-using SocialNetwork.Domain.Entities.TodoItems.Events;
+﻿using SocialNetwork.Domain.Entities.TodoItems.Events;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
 namespace SocialNetwork.Domain.Entities.TodoItems
 {
-    public class TodoItem : Entity, IHasDomainEvent, IAuditableEntity, IDeleteEntity
+    public class TodoItem : EntityBase<int>, IHasDomainEvent, IAuditableEntity, IDeleteEntity
     {
         public int ListId { get; set; }
 

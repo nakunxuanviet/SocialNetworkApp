@@ -1,4 +1,4 @@
-﻿using NaKun.Arc.Domain.SeedWork;
+﻿using SocialNetwork.Domain.SeedWork;
 using System;
 
 namespace SocialNetwork.Domain.Entities.AuditLog

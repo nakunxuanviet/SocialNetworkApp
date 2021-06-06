@@ -1,4 +1,4 @@
-﻿namespace SocialNetwork.Common.ArcLayer.Domain.SeedWork
+﻿namespace SocialNetwork.Domain.SeedWork
 {
     /// <summary>
     /// Flag deleted

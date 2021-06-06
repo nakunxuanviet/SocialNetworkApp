@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Globalization;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.Exceptions
+namespace SocialNetwork.Domain.Exceptions
 {
     public class DomainException : Exception
     {
@@ -13,6 +14,10 @@ namespace SocialNetwork.Common.ArcLayer.Domain.Exceptions
         }
 
         public DomainException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        public DomainException(string message, params object[] args) : base(string.Format(CultureInfo.CurrentCulture, message, args))
         {
         }
     }

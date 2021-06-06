@@ -1,14 +1,13 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using NaKun.Arc.Domain.Events;
-using NaKun.Arc.Domain.SeedWork;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Entities.Activities;
 using SocialNetwork.Domain.Entities.AuditLog;
 using SocialNetwork.Domain.Entities.Settings;
 using SocialNetwork.Domain.Entities.TodoItems;
+using SocialNetwork.Domain.SeedWork;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

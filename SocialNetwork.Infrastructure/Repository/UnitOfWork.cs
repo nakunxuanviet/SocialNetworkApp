@@ -1,7 +1,6 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using SocialNetwork.Domain.Interfaces;
+using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Persistence;
-using System;
-using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,16 +8,21 @@ namespace SocialNetwork.Infrastructure.Repository
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private readonly DbFactory _dbFactory;
+        private readonly ApplicationDbContext _dbContext;
 
-        public UnitOfWork(DbFactory dbFactory)
+        public UnitOfWork(ApplicationDbContext dbContext)
         {
-            _dbFactory = dbFactory;
+            _dbContext = dbContext;
         }
 
-        public Task<int> CommitChangeAsync(CancellationToken cancellationToken)
+        public IRepositoryBase<T> Repository<T>() where T : EntityBase
         {
-            return _dbFactory.DbContext.SaveChangesAsync(cancellationToken);
+            return new EfRepositoryBase<T>(_dbContext);
+        }
+
+        public Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            return _dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 

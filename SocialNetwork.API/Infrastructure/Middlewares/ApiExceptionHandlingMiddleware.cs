@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NaKun.Arc.Domain.Exceptions;
+using SocialNetwork.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Net;

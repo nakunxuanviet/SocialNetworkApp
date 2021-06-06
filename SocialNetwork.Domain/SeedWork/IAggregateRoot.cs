@@ -1,4 +1,4 @@
-﻿namespace SocialNetwork.Common.ArcLayer.Domain.ObjectTypes
+﻿namespace SocialNetwork.Domain.SeedWork
 {
     /// <summary>
     /// Domain root

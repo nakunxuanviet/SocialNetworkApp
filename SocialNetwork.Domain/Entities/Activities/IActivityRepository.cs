@@ -1,4 +1,4 @@
-﻿using SocialNetwork.Domain.SeedWork;
+﻿using SocialNetwork.Domain.Interfaces;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {

@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.EfCore
+namespace SocialNetwork.Domain.Interfaces
 {
-    public interface IGenericRepositoryWithCachingHangfire<T> where T : class
+    public interface IRepositoryBaseWithCachingHangfire<T> where T : class
     {
         Task<T> GetByIdAsync(int id);
 

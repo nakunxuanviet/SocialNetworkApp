@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SocialNetwork.Common.ArcLayer.App
+namespace SocialNetwork.Domain.SeedWork
 {
-    public class BaseHandler
+    public class DomainService
     {
     }
 }

@@ -1,16 +1,13 @@
-﻿using SocialNetwork.Common.ArcLayer.Domain.Entity;
+﻿using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.EfCore
+namespace SocialNetwork.Domain.Interfaces
 {
-    /// <summary>
-    /// Genenic repository for Entity Framework
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public interface IEfGenericRepository<TEntity, TId> where TEntity : IEntityBase<TId>
+    public interface IRepositoryBase<T> where T : EntityBase
     {
         /// <summary>
         /// Find all entities in a table.
@@ -19,7 +16,7 @@ namespace SocialNetwork.Common.ArcLayer.Domain.EfCore
         /// </summary>
         /// <param name="trackChanges"></param>
         /// <returns></returns>
-        IQueryable<TEntity> FindAll(bool trackChanges);
+        IQueryable<T> FindAll(bool trackChanges);
 
         /// <summary>
         /// Find entities with conditional expression.
@@ -29,36 +26,36 @@ namespace SocialNetwork.Common.ArcLayer.Domain.EfCore
         /// <param name="expression"></param>
         /// <param name="trackChanges"></param>
         /// <returns></returns>
-        IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> expression, bool trackChanges);
+        IQueryable<T> FindBy(Expression<Func<T, bool>> expression, bool trackChanges);
 
         /// <summary>
         /// Insert a entity
         /// </summary>
         /// <param name="entity"></param>
-        void Insert(TEntity entity);
+        Task<T> InsertAsync(T entity);
 
         /// <summary>
         /// Update a entity
         /// </summary>
         /// <param name="entity"></param>
-        void Update(TEntity entity);
+        Task<T> UpdateAsync(T entity);
 
         /// <summary>
         /// Delete a entity
         /// </summary>
         /// <param name="entity"></param>
-        void Delete(TEntity entity);
+        Task<bool> DeleteAsync(T entity);
 
         /// <summary>
         /// Add a list of entities
         /// </summary>
         /// <param name="entities"></param>
-        void AddRange(IEnumerable<TEntity> entities);
+        void AddRange(IEnumerable<T> entities);
 
         /// <summary>
         /// Delete a list of entities
         /// </summary>
         /// <param name="entities"></param>
-        void RemoveRange(IEnumerable<TEntity> entities);
+        void DeleteRange(IEnumerable<T> entities);
     }
 }

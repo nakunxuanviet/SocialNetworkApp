@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Cache;
-using SocialNetwork.Common.ArcLayer.Domain.EfCore;
+using SocialNetwork.Domain.Interfaces;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Repository
 {
-    public class GenericRepositoryWithCachingHangfire<T> : IGenericRepositoryWithCachingHangfire<T> where T : class
+    public class GenericRepositoryWithCachingHangfire<T> : IRepositoryBaseWithCachingHangfire<T> where T : class
     {
         private readonly static CacheTech cacheTech = CacheTech.Memory;
         private readonly string cacheKey = $"{typeof(T)}";

@@ -1,4 +1,4 @@
-﻿using NaKun.Arc.Domain.Events;
+﻿using SocialNetwork.Domain.SeedWork;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.Application.Common.Interfaces

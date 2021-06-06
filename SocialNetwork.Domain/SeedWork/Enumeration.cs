@@ -1,10 +1,9 @@
-﻿using SocialNetwork.Common.ArcLayer.Domain.Entity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace SocialNetwork.Common.ArcLayer.Domain.ObjectTypes.Enumerations
+namespace SocialNetwork.Domain.SeedWork
 {
     public abstract class Enumeration : EntityBase<int>, IComparable
     {

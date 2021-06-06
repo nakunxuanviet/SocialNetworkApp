@@ -3,9 +3,9 @@ using SocialNetwork.Infrastructure.Persistence;
 
 namespace SocialNetwork.Infrastructure.Repository.ActivityRepository
 {
-    public class ActivityRepository : RepositoryBase<Activity>, IActivityRepository
+    public class ActivityRepository : EfRepositoryBase<Activity>, IActivityRepository
     {
-        public ActivityRepository(DbFactory dbFactory) : base(dbFactory)
+        public ActivityRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
         }
     }
