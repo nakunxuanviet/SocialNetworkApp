@@ -67,6 +67,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
             app.UseSwagger(options => { options.RouteTemplate = "api-docs/{documentName}/docs.json"; });
             app.UseSwaggerUI(options =>
             {
+                options.DisplayRequestDuration();
                 options.RoutePrefix = "api-docs";
                 foreach (var description in provider.ApiVersionDescriptions)
                     options.SwaggerEndpoint($"/api-docs/{description.GroupName}/docs.json", description.GroupName.ToUpperInvariant());

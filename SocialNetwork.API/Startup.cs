@@ -36,6 +36,7 @@ namespace SocialNetwork.API
                 .AddRedisCache(Configuration)
                 //.AddRepoPatternCachingHangfire(Configuration)
                 //.AddMemoryCache()
+                .AddCachingWithMediatR(Configuration)
                 .AddConfigureHangfire(Configuration)
                 .AddCustomCors()
                 .AddCustomDbContext(Configuration)
@@ -90,9 +91,9 @@ namespace SocialNetwork.API
 
             // Default url to view log page is http://<your-app>/serilog-ui. If config RoutePrefix then http://<your-app>/logs
             //app.UseSerilogUi();
-            app.UseSerilogUi(option => option.RoutePrefix = "logs");
+            app.UseSerilogUi(option => option.RoutePrefix = "logs");  // https://localhost:5001/logs
 
-            app.UseHangfireDashboard("/jobs");
+            app.UseHangfireDashboard("/jobs");   //https://localhost:5001/jobs
             HangfireJobScheduler.ScheduleRecurringClearLogJob(Configuration);
 
             app.UseEndpoints(endpoints =>

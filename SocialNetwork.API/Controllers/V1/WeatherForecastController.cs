@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SocialNetwork.Application.Activities.Models;
 using SocialNetwork.Application.Activities.Queries;
 using SocialNetwork.Domain.Entities.Activities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.API.Controllers.V1
@@ -48,6 +50,20 @@ namespace SocialNetwork.API.Controllers.V1
         public async Task<ActionResult<Activity>> GetActivityByIdUsingRedisCache([FromQuery] GetActivityDetailWithRedisQuery query)
         {
             return await _mediator.Send(query);
+        }
+
+        /// <summary>
+        /// Get activity detail using caching with MediatR
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        //[Authorize(Policy = "IsActivityHost")]
+        [MapToApiVersion("1.0")]
+        [HttpGet("caching-with-mediatR/{id}")]
+        [ProducesResponseType(typeof(ActivityDto), (int)HttpStatusCode.OK)]
+        public async Task<IActionResult> GetActivityWithCacheMediatR(int id)
+        {
+            return HandleResult(await _mediator.Send(new GetActivityQueryCachingWithMediatR { Id = id, BypassCache = false }));
         }
     }
 }

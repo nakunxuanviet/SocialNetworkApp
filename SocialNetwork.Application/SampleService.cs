@@ -18,7 +18,6 @@ namespace SocialNetwork.Application
             await repository.InsertAsync(act);
             await UnitOfWork.SaveChangesAsync();
 
-
             return act;
         }
     }

@@ -1,7 +1,9 @@
 ﻿using Hangfire;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SocialNetwork.Application.Common.Behaviours;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Cache;
 using SocialNetwork.Application.Common.Models.Emails;
@@ -97,12 +99,11 @@ namespace SocialNetwork.Infrastructure
             return services;
         }
 
-        //Repository pattern with caching and hangfire
+        // Repository pattern with caching and hangfire
         public static IServiceCollection AddRepoPatternCachingHangfire(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<CacheConfiguration>(configuration.GetSection("CacheConfiguration"));
-            //For In-Memory Caching
-            services.AddMemoryCache();
+            //services.AddMemoryCache();   // For In-Memory Caching
             services.AddTransient<MemoryCacheService>();
             services.AddTransient<RedisCacheService>();
             services.AddTransient<Func<CacheTech, ICacheService>>(serviceProvider => key =>
@@ -110,15 +111,30 @@ namespace SocialNetwork.Infrastructure
                 switch (key)
                 {
                     case CacheTech.Memory:
+                        services.AddMemoryCache();
                         return serviceProvider.GetService<MemoryCacheService>();
 
                     case CacheTech.Redis:
+                        services.AddStackExchangeRedisCache(options =>
+                        {
+                            options.Configuration = $"{configuration.GetValue<string>("Redis:Server")}:{configuration.GetValue<int>("Redis:Port")}";
+                        });
                         return serviceProvider.GetService<RedisCacheService>();
 
                     default:
+                        services.AddMemoryCache();
                         return serviceProvider.GetService<MemoryCacheService>();
                 }
             });
+
+            return services;
+        }
+
+        // Response Caching with MediatR Pipeline Behavior
+        public static IServiceCollection AddCachingWithMediatR(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDistributedMemoryCache();
+            services.Configure<CacheSettings>(configuration.GetSection("CacheSettings"));
 
             return services;
         }
