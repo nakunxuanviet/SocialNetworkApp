@@ -15,11 +15,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SocialNetwork.Application.Accounts.Models;
-using SocialNetwork.Application.Common;
 using SocialNetwork.Application.Common.Exceptions;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
 using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Shared;
 
 namespace SocialNetwork.API.Controllers.V1
 {
