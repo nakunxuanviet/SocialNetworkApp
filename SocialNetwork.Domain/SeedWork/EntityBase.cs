@@ -4,17 +4,23 @@ namespace SocialNetwork.Domain.SeedWork
 {
     public abstract class EntityBase
     {
-        private List<DomainEvent> _events;
-        public IReadOnlyList<DomainEvent> Events => _events.AsReadOnly();
+        private List<DomainEvent> _domainEvents;
+        public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents?.AsReadOnly();
 
-        protected void AddEvent(DomainEvent @event)
+        public void AddDomainEvent(DomainEvent eventItem)
         {
-            _events.Add(@event);
+            _domainEvents = _domainEvents ?? new List<DomainEvent>();
+            _domainEvents.Add(eventItem);
         }
 
-        protected void RemoveEvent(DomainEvent @event)
+        public void RemoveDomainEvent(DomainEvent eventItem)
         {
-            _events.Remove(@event);
+            _domainEvents?.Remove(eventItem);
+        }
+
+        public void ClearDomainEvents()
+        {
+            _domainEvents?.Clear();
         }
     }
 

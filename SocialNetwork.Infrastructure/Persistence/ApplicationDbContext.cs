@@ -46,7 +46,7 @@ namespace SocialNetwork.Infrastructure.Persistence
         //    return result;
         //}
 
-        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             foreach (Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry<IAuditableEntity> entry in ChangeTracker.Entries<IAuditableEntity>())
             {
@@ -69,7 +69,7 @@ namespace SocialNetwork.Infrastructure.Persistence
 
             int result = await base.SaveChangesAsync(cancellationToken);
 
-            await DispatchEvents(cancellationToken);
+            await DispatchEvents();
 
             return result;
         }
@@ -89,14 +89,19 @@ namespace SocialNetwork.Infrastructure.Persistence
             builder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
         }
 
-        private async Task DispatchEvents(CancellationToken cancellationToken)
+        private async Task DispatchEvents()
         {
-            var domainEventEntities = ChangeTracker.Entries<IHasDomainEvent>()
-                .Select(x => x.Entity.DomainEvents)
-                .SelectMany(x => x)
-                .ToArray();
+            var domainEntities = ChangeTracker
+               .Entries<EntityBase>()
+               .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any());
 
-            foreach (var domainEvent in domainEventEntities)
+            var domainEvents = domainEntities
+                .SelectMany(x => x.Entity.DomainEvents)
+                .ToList();
+
+            domainEntities.ToList().ForEach(entity => entity.Entity.ClearDomainEvents());
+
+            foreach (var domainEvent in domainEvents)
             {
                 await _domainEventService.Publish(domainEvent);
             }

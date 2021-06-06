@@ -22,10 +22,10 @@ namespace SocialNetwork.Infrastructure.Services
         public async Task Publish(DomainEvent domainEvent)
         {
             _logger.LogInformation("Publishing domain event. Event - {event}", domainEvent.GetType().Name);
-            await _mediator.Publish(GetNotificationCorrespondingToDomainEvent(domainEvent));
+            await _mediator.Publish(GetNotificationCorRespondingToDomainEvent(domainEvent));
         }
 
-        private INotification GetNotificationCorrespondingToDomainEvent(DomainEvent domainEvent)
+        private INotification GetNotificationCorRespondingToDomainEvent(DomainEvent domainEvent)
         {
             return (INotification)Activator.CreateInstance(
                 typeof(DomainEventNotification<>).MakeGenericType(domainEvent.GetType()), domainEvent);

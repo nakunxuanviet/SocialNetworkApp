@@ -10,6 +10,7 @@ namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations.SettingC
         {
             builder.ToTable("Settings");
             builder.HasKey(o => o.Id);
+            builder.Ignore(b => b.DomainEvents);
 
             builder.Property(o => o.Key).HasMaxLength(50).IsRequired();
             builder.Property(o => o.Value).IsRequired();

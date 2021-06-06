@@ -1,0 +1,1 @@
+Add-Migration Init -Context ApplicationDbContext -o Persistence\Migrations

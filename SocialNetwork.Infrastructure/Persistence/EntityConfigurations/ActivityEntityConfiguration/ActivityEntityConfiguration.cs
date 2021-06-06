@@ -10,6 +10,7 @@ namespace SocialNetwork.Infrastructure.Persistence.EntityConfigurations.Activity
         {
             builder.ToTable("Activities");
             builder.HasKey(o => o.Id);
+            builder.Ignore(b => b.DomainEvents);
 
             builder.Property(o => o.Title).HasMaxLength(50).IsRequired();
             builder.Property(o => o.Date).IsRequired();

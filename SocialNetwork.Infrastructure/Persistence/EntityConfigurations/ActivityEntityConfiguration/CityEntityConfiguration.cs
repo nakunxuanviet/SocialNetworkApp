@@ -11,7 +11,7 @@
 //            builder.ToTable("Cities");
 //            builder.HasKey(o => o.Id);
 //            builder.Property(o => o.Name).HasMaxLength(20).IsRequired();
-
+//            builder.Ignore(b => b.DomainEvents);
 //            builder.HasQueryFilter(o => o.IsDeleted == false);
 //            builder.HasOne(a => a.Activity).WithOne(c => c.City).HasForeignKey<Activity>(c => c.CityId);
 //        }

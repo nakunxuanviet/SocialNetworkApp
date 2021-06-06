@@ -15,6 +15,7 @@
 //        {
 //            builder.ToTable("Categories");
 //            builder.HasKey(o => o.Id);
+//            builder.Ignore(b => b.DomainEvents);
 //            builder.Property(o => o.Name).HasMaxLength(20).IsRequired();
 
 //            builder.HasQueryFilter(o => o.IsDeleted == false);
