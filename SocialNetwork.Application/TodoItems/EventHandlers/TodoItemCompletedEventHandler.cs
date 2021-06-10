@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SocialNetwork.Application.Common.Models.Events;
 using SocialNetwork.Domain.Entities.TodoItems.Events;
+using SocialNetwork.Domain.SeedWork;
 using System.Threading;
 using System.Threading.Tasks;
 

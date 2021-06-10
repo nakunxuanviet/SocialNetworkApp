@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SocialNetwork.Domain.Exceptions;
+using SocialNetwork.Domain.Shared.ActionResult;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -29,8 +30,33 @@ namespace SocialNetwork.API.Infrastructure.Middlewares
             }
             catch (Exception ex)
             {
-                await HandleExceptionAsync(context, ex);
+                await HandleExceptionAsyncV2(context, ex);
+                //await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private async Task HandleExceptionAsyncV2(HttpContext context, Exception ex)
+        {
+            var response = context.Response;
+            response.ContentType = "application/json";
+            var responseModel = ApiResponse<string>.Fail(ex.Message);
+            switch (ex)
+            {
+                case DomainException e:
+                    // custom application error
+                    response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                case KeyNotFoundException e:
+                    // not found error
+                    response.StatusCode = (int)HttpStatusCode.NotFound;
+                    break;
+                default:
+                    // unhandled error
+                    response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    break;
+            }
+            var result = JsonSerializer.Serialize(responseModel);
+            await response.WriteAsync(result);
         }
 
         private async Task HandleExceptionAsync(HttpContext context, Exception ex)

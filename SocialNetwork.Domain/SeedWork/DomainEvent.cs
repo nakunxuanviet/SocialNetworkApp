@@ -12,7 +12,7 @@ namespace SocialNetwork.Domain.SeedWork
         }
 
         public virtual Guid EventId { get; init; }
-        //public bool IsPublished { get; set; }
+
         public virtual DateTime CreatedAt { get; init; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MediatR;
-using SocialNetwork.Domain.SeedWork;
 
-namespace SocialNetwork.Application.Common.Models.Events
+namespace SocialNetwork.Domain.SeedWork
 {
     public class DomainEventNotification<TDomainEvent> : INotification where TDomainEvent : DomainEvent
     {

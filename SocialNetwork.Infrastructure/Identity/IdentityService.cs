@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Application.Common.Models.Result;
 using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Shared.ActionResult;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -24,7 +24,7 @@ namespace SocialNetwork.Infrastructure.Identity
             return user.UserName;
         }
 
-        public async Task<(ObjectResult Result, string UserId)> CreateUserAsync(string userName, string password)
+        public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
         {
             var user = new ApplicationUser
             {
@@ -34,10 +34,10 @@ namespace SocialNetwork.Infrastructure.Identity
 
             var result = await _userManager.CreateAsync(user, password);
 
-            return (result.ToApplicationResult(), user.Id);
+            return (ToIdentityResult(result), user.Id);
         }
 
-        public async Task<ObjectResult> DeleteUserAsync(string userId)
+        public async Task<Result> DeleteUserAsync(string userId)
         {
             var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
 
@@ -46,14 +46,21 @@ namespace SocialNetwork.Infrastructure.Identity
                 return await DeleteUserAsync(user);
             }
 
-            return ObjectResult.Success();
+            return Result.Success();
         }
 
-        public async Task<ObjectResult> DeleteUserAsync(ApplicationUser user)
+        public async Task<Result> DeleteUserAsync(ApplicationUser user)
         {
             var result = await _userManager.DeleteAsync(user);
 
-            return result.ToApplicationResult();
+            return ToIdentityResult(result);
+        }
+
+        private Result ToIdentityResult(IdentityResult result)
+        {
+            return result.Succeeded
+                ? Result.Success()
+                : Result.Failure(result.Errors.Select(e => e.Description).ToList());
         }
     }
 }

@@ -5,37 +5,30 @@ using System.Reflection;
 
 namespace SocialNetwork.Domain.SeedWork
 {
-    public abstract class Enumeration : EntityBase<int>, IComparable
+    public abstract class Enumeration : IComparable
     {
-        public string Code { get; protected set; }
-        public string Name { get; protected set; }
+        public int Id { get; private set; }
 
-        protected Enumeration()
-        {
-        }
+        public string Name { get; private set; }
+       
 
-        protected Enumeration(int id, string code, string name)
-        {
-            Id = id;
-            Code = code;
-            Name = name;
-        }
+        protected Enumeration(int id, string name) => (Id, Name) = (id, name);
 
         public override string ToString() => Name;
 
-        public static IEnumerable<T> GetAll<T>() where T : Enumeration
-        {
-            var fields = typeof(T).GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
-
-            return fields.Select(f => f.GetValue(null)).Cast<T>();
-        }
+        public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
+            typeof(T).GetFields(BindingFlags.Public |
+                                BindingFlags.Static |
+                                BindingFlags.DeclaredOnly)
+                     .Select(f => f.GetValue(null))
+                     .Cast<T>();
 
         public override bool Equals(object obj)
         {
-            var otherValue = obj as Enumeration;
-
-            if (otherValue == null)
+            if (obj is not Enumeration otherValue)
+            {
                 return false;
+            }
 
             var typeMatches = GetType().Equals(obj.GetType());
             var valueMatches = Id.Equals(otherValue.Id);
@@ -44,6 +37,12 @@ namespace SocialNetwork.Domain.SeedWork
         }
 
         public override int GetHashCode() => Id.GetHashCode();
+
+        public static int AbsoluteDifference(Enumeration firstValue, Enumeration secondValue)
+        {
+            var absoluteDifference = Math.Abs(firstValue.Id - secondValue.Id);
+            return absoluteDifference;
+        }
 
         public static T FromValue<T>(int value) where T : Enumeration
         {
