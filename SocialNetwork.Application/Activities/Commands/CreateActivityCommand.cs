@@ -42,16 +42,7 @@ namespace SocialNetwork.Application.Activities.Commands
 
         public async Task<Result<Unit>> Handle(CreateActivityCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Activity
-            {
-                Title = request.Title,
-                Date = request.Date,
-                Description = request.Description,
-                Category = request.Category,
-                City = request.City,
-                Venue = request.Venue,
-                IsCancelled = request.IsCancelled
-            };
+            var entity = new Activity(request.Title, request.Date, request.Description, request.Category, request.City, request.Venue, request.IsCancelled);
 
             _context.Activities.Add(entity);
 

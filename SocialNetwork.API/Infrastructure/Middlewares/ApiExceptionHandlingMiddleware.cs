@@ -39,7 +39,7 @@ namespace SocialNetwork.API.Infrastructure.Middlewares
         {
             var response = context.Response;
             response.ContentType = "application/json";
-            var responseModel = ApiResponse<string>.Fail(ex.Message);
+            var responseModel = Result<string>.Failure(ex.Message);
             switch (ex)
             {
                 case DomainException e:

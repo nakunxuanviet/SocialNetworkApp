@@ -1,11 +1,13 @@
-﻿using SocialNetwork.Domain.Exceptions;
+﻿using SocialNetwork.Domain.Entities.TodoItems;
+using SocialNetwork.Domain.Entities.TodoItems.Events;
+using SocialNetwork.Domain.Exceptions;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Runtime.Serialization;
 
 namespace SocialNetwork.Domain.Entities.Activities
 {
-    public class Activity : EntityBase<int>, IAuditableEntity, IDeleteEntity
+    public class Activity : EntityBase<int>, IAggregateRoot, IAuditableEntity, IDeleteEntity
     {
         /// <summary>
         /// Title
@@ -72,5 +74,23 @@ namespace SocialNetwork.Domain.Entities.Activities
         public DateTime? CreatedAt { get; set; }
         public string UpdatedBy { get; set; }
         public DateTime? UpdatedAt { get; set; }
+
+        public Activity()
+        {
+                
+        }
+
+        public Activity(string title, DateTime date, string description, string category, string city, string venue, bool isCancelled)
+        {
+            Title = title;
+            Date = date;
+            Description = description;
+            Category = category;
+            City = city;
+            Venue = venue;
+            IsCancelled = isCancelled;
+
+            AddDomainEvent(new TodoItemCreatedEvent(new TodoItem{ Title = "Test Domain Event"}));
+        }
     }
 }
