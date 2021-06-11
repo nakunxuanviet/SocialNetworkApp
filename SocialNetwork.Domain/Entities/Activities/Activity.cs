@@ -77,7 +77,7 @@ namespace SocialNetwork.Domain.Entities.Activities
 
         public Activity()
         {
-                
+
         }
 
         public Activity(string title, DateTime date, string description, string category, string city, string venue, bool isCancelled)
@@ -90,7 +90,7 @@ namespace SocialNetwork.Domain.Entities.Activities
             Venue = venue;
             IsCancelled = isCancelled;
 
-            AddDomainEvent(new TodoItemCreatedEvent(new TodoItem{ Title = "Test Domain Event"}));
+            AddDomainEvent(new TodoItemCreatedEvent(new TodoItem { Title = "Test Domain Event" }));
         }
     }
 }
