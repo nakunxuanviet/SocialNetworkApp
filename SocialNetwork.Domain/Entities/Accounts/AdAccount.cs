@@ -3,7 +3,7 @@ using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
-namespace SocialNetwork.Domain.ValueObjects
+namespace SocialNetwork.Domain.Entities.Accounts
 {
     public class AdAccount : ValueObject
     {
