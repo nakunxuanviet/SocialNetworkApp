@@ -31,7 +31,7 @@ namespace SocialNetwork.Infrastructure.JobSchedules
                 var queryString = $"TRUNCATE TABLE [dbo].[Logs];";
                 await connection.ExecuteAsync(queryString);
             }
-            _logger.LogInformation("Clear log job completed");
+            _logger.LogInformation("Clear log job completed.");
         }
     }
 }

@@ -49,7 +49,8 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
             {
                 // Configure the Authority to the expected value for your authentication provider
                 // This ensures the token is appropriately validated
-                // options.Authority = /* TODO: Insert Authority URL here */;
+                // var identityUrl = Configuration.GetValue<string>("IdentityUrl");
+                // options.Authority = identityUrl;
 
                 opt.RequireHttpsMetadata = false;
                 opt.SaveToken = true;

@@ -5,6 +5,10 @@ namespace SocialNetwork.Application.Common.Interfaces
 {
     public interface IIdentityService
     {
+        string GetUserIdentity();
+
+        string GetUserName();
+
         /// <summary>
         /// Get user name.
         /// </summary>

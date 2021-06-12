@@ -8,9 +8,8 @@ import ActivityDashBoard from "../../features/activities/dashboard/ActivityDashB
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
-  const [selectedActivity, setSelectedActivity] = useState<
-    Activity | undefined
-  >(undefined);
+  const [selectedActivity, setSelectedActivity] =
+    useState<Activity | undefined>(undefined);
 
   useEffect(() => {
     axios.get("https://localhost:5001/api/v1.0/activities").then((response) => {

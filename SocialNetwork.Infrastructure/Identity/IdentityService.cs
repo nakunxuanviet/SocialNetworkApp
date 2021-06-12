@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Shared.ActionResult;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,11 +12,23 @@ namespace SocialNetwork.Infrastructure.Identity
 {
     public class IdentityService : IIdentityService
     {
+        private IHttpContextAccessor _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public IdentityService(UserManager<ApplicationUser> userManager)
+        public IdentityService(IHttpContextAccessor context, UserManager<ApplicationUser> userManager)
         {
+            _context = context ?? throw new ArgumentNullException(nameof(context));
             _userManager = userManager;
+        }
+
+        public string GetUserIdentity()
+        {
+            return _context.HttpContext.User.FindFirst("sub").Value;
+        }
+
+        public string GetUserName()
+        {
+            return _context.HttpContext.User.Identity.Name;
         }
 
         public async Task<string> GetUserNameAsync(string userId)
