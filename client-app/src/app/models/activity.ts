@@ -1,3 +1,5 @@
+import { Paginated } from "./paginated";
+
 export interface Activity {
   id: number;
   title: string;
@@ -7,4 +9,8 @@ export interface Activity {
   city: string;
   venue: string;
   isCancelled: boolean;
+}
+
+export interface PaginatedActivity extends Paginated {
+  items: Activity[]
 }
