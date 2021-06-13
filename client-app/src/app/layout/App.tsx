@@ -5,6 +5,7 @@ import "./style.css";
 import { Activity } from "../models/activity";
 import NavBar from "./NavBar";
 import ActivityDashBoard from "../../features/activities/dashboard/ActivityDashBoard";
+// import { v4 as uuid } from "uuid";
 
 function App() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -35,6 +36,22 @@ function App() {
     setEditMode(false);
   }
 
+  function handleCreateOrEditActivity(activity: Activity) {
+    activity.id
+      ? setActivities([
+          ...activities.filter((x) => x.id !== activity.id),
+          activity,
+        ])
+      : setActivities([...activities, activity]);
+
+    setEditMode(false);
+    setSelectedActivity(activity);
+  }
+
+  function handleDeleteActivity(id: Number) {
+    setActivities([...activities.filter((x) => x.id !== id)]);
+  }
+
   return (
     <>
       <NavBar openForm={handleFormOpen} />
@@ -47,6 +64,8 @@ function App() {
           editMode={editMode}
           openForm={handleFormOpen}
           closeForm={handleFormClose}
+          createOrEdit={handleCreateOrEditActivity}
+          deleteActivity={handleDeleteActivity}
         />
       </Container>
     </>
