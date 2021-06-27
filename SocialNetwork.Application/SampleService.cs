@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SocialNetwork.Application
 {
-    public class SampleService : BaseService
+    public class SampleService : ApplicationService
     {
         public SampleService(IUnitOfWork unitOfWork) : base(unitOfWork)
         {

@@ -23,7 +23,7 @@ namespace SocialNetwork.Application.Activities.Queries
         public TimeSpan? SlidingExpiration { get; set; }
     }
 
-    internal class GetActivityQueryCachingWithMediatRHandler : BaseService, IRequestHandler<GetActivityQueryCachingWithMediatR, Result<ActivityDto>>
+    internal class GetActivityQueryCachingWithMediatRHandler : ApplicationService, IRequestHandler<GetActivityQueryCachingWithMediatR, Result<ActivityDto>>
     {
         private readonly IMapper _mapper;
         public GetActivityQueryCachingWithMediatRHandler(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork)

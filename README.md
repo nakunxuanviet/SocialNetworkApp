@@ -11,6 +11,8 @@ A social networking application, the idea is almost similar to Instagram/Twister
 - Identity
 - SQL Server 2019
 - ReactJS 17 (Typescript)
+- Redis cache
+- Hangfire
 
 ## Hot features:
 - API Versioning

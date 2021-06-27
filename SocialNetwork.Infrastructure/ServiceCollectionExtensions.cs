@@ -7,11 +7,13 @@ using SocialNetwork.Application.Common.Behaviours;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Cache;
 using SocialNetwork.Application.Common.Models.Emails;
+using SocialNetwork.Domain.Entities.Idempotency;
 using SocialNetwork.Domain.Interfaces;
 using SocialNetwork.Domain.SeedWork;
 using SocialNetwork.Infrastructure.Cache;
 using SocialNetwork.Infrastructure.Email;
 using SocialNetwork.Infrastructure.Files;
+using SocialNetwork.Infrastructure.Idempotency;
 using SocialNetwork.Infrastructure.Identity;
 using SocialNetwork.Infrastructure.Logging;
 using SocialNetwork.Infrastructure.Persistence;
@@ -49,6 +51,7 @@ namespace SocialNetwork.Infrastructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepositoryBase<>), typeof(EfRepositoryBase<>));
+            services.AddScoped<IRequestManager, RequestManager>(); //Idempotency
 
             return services;
         }
