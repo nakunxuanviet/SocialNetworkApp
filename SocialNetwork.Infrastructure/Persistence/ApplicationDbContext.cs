@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Entities.Activities;
+using SocialNetwork.Domain.Entities.ApplicationRoles;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Domain.Entities.AuditLog;
 using SocialNetwork.Domain.Entities.Settings;
 using SocialNetwork.Domain.Entities.TodoItems;
@@ -31,11 +32,15 @@ namespace SocialNetwork.Infrastructure.Persistence
             //ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
         }
 
+        public DbSet<MenuItem> MenuItems { get; set; }
+        public DbSet<MenuPermission> MenuPermissions { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<ApplicationRoleMenu> RoleMenus { get; set; }
+
         public DbSet<Audit> AuditLogs { get; set; }
         public DbSet<Setting> Settings { get; set; }
         public DbSet<Activity> Activities { get; set; }
         public DbSet<TodoItem> TodoItems { get; set; }
-
         //public DbSet<Category> Categories { get; set; }
         //public DbSet<City> Cities { get; set; }
 

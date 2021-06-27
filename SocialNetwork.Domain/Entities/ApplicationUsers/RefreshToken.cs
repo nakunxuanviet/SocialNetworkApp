@@ -1,3 +1,4 @@
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using System;
 
 namespace SocialNetwork.Domain.Entities.Accounts

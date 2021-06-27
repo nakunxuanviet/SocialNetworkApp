@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Domain.Shared.ActionResult;
 using System;
 using System.Linq;

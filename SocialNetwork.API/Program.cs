@@ -5,7 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationRoles;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
 using System.Threading.Tasks;
@@ -44,8 +45,10 @@ namespace SocialNetwork.API
                     }
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    var roleManager = services.GetRequiredService<RoleManager<ApplicationRole>>();
 
-                    await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
+                    //await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
+                    await ApplicationDbContextSeed.SeedUserAndRolePermissionAsync(userManager, roleManager, context);
                     await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                 }
 

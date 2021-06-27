@@ -18,7 +18,7 @@ using SocialNetwork.Application.Accounts.Models;
 using SocialNetwork.Application.Common.Exceptions;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Application.Common.Models.Emails;
-using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Domain.Shared;
 
 namespace SocialNetwork.API.Controllers.V1
@@ -53,7 +53,7 @@ namespace SocialNetwork.API.Controllers.V1
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<AccountInformationVm>> Login([FromBody] LoginDto loginDto)
         {
             var user = await _userManager.Users
                 //.Include(p => p.Photos)
@@ -69,11 +69,11 @@ namespace SocialNetwork.API.Controllers.V1
 
             if (result.Succeeded)
             {
-                await SetRefreshToken(user);
-                var userObj = CreateUserObject(user);
+                //await SetRefreshToken(user);
+                var userObj = await SetRefreshTokenAndCreateUser(user);
 
                 // Save token
-                await _userManager.SetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken, userObj.Token);
+                await _userManager.SetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken, userObj.AccessToken);
                 return userObj;
             }
 
@@ -83,7 +83,7 @@ namespace SocialNetwork.API.Controllers.V1
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<UserDto>> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<AccountInformationVm>> Register([FromBody] RegisterDto registerDto)
         {
             if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
             {
@@ -174,19 +174,19 @@ namespace SocialNetwork.API.Controllers.V1
         [MapToApiVersion("1.0")]
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<UserDto>> GetCurrentUser()
+        public async Task<ActionResult<AccountInformationVm>> GetCurrentUser()
         {
             var user = await _userManager.Users
                 //.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
-            await SetRefreshToken(user);
-            return CreateUserObject(user);
+            //await SetRefreshToken(user);
+            return await SetRefreshTokenAndCreateUser(user);
         }
 
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("fbLogin")]
-        public async Task<ActionResult<UserDto>> FacebookLogin(string accessToken)
+        public async Task<ActionResult<AccountInformationVm>> FacebookLogin(string accessToken)
         {
             var fbVerifyKeys = _config["Facebook:AppId"] + "|" + _config["Facebook:AppSecret"];
 
@@ -209,7 +209,7 @@ namespace SocialNetwork.API.Controllers.V1
                 //.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == username);
 
-            if (user != null) return CreateUserObject(user);
+            if (user != null) return await SetRefreshTokenAndCreateUser(user);
 
             user = new ApplicationUser
             {
@@ -232,14 +232,14 @@ namespace SocialNetwork.API.Controllers.V1
 
             if (!result.Succeeded) return BadRequest("Problem creating user account");
 
-            await SetRefreshToken(user);
-            return CreateUserObject(user);
+            //await SetRefreshToken(user);
+            return await SetRefreshTokenAndCreateUser(user);
         }
 
         [MapToApiVersion("1.0")]
         [Authorize]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<UserDto>> RefreshToken()
+        public async Task<ActionResult<AccountInformationVm>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             var user = await _userManager.Users
@@ -253,7 +253,7 @@ namespace SocialNetwork.API.Controllers.V1
 
             if (oldToken != null && !oldToken.IsActive) return Unauthorized();
 
-            return CreateUserObject(user);
+            return await SetRefreshTokenAndCreateUser(user);
         }
 
         [MapToApiVersion("1.0")]
@@ -352,14 +352,16 @@ namespace SocialNetwork.API.Controllers.V1
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
         }
 
-        private UserDto CreateUserObject(ApplicationUser user)
+        private async Task<AccountInformationVm> SetRefreshTokenAndCreateUser(ApplicationUser user)
         {
-            return new UserDto
+            await SetRefreshToken(user);
+
+            return new AccountInformationVm
             {
+                Username = user.UserName,
                 DisplayName = user.DisplayName,
                 //Image = user?.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
-                Token = _tokenService.CreateToken(user),
-                Username = user.UserName
+                AccessToken = _tokenService.CreateToken(user)
             };
         }
     }

@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using SocialNetwork.Application.Accounts.Models;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 
 namespace SocialNetwork.Infrastructure.Identity
 {

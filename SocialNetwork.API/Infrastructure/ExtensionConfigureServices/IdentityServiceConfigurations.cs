@@ -6,7 +6,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SocialNetwork.Application.Accounts.Models;
 using SocialNetwork.Application.Common.Interfaces;
-using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationRoles;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Infrastructure.Identity;
 using SocialNetwork.Infrastructure.Persistence;
 using System;
@@ -27,6 +28,7 @@ namespace SocialNetwork.API.Infrastructure.ExtensionConfigureServices
                 opt.SignIn.RequireConfirmedEmail = true;
                 opt.User.RequireUniqueEmail = false;
             })
+            .AddRoles<ApplicationRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddSignInManager<SignInManager<ApplicationUser>>()
             .AddDefaultTokenProviders();

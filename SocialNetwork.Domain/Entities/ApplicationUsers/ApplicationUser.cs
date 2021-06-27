@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
 
-namespace SocialNetwork.Domain.Entities.Accounts
+namespace SocialNetwork.Domain.Entities.ApplicationUsers
 {
     public class ApplicationUser : IdentityUser, IAuditableEntity, IDeleteEntity
     {

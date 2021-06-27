@@ -1,4 +1,5 @@
 ﻿using SocialNetwork.Domain.Entities.Accounts;
+using SocialNetwork.Domain.Entities.ApplicationUsers;
 
 namespace SocialNetwork.Application.Common.Interfaces
 {
