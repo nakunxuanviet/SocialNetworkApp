@@ -30,8 +30,6 @@ export default function ActivityForm({
   const [activity, setActivity] = useState(initialState);
 
   function handleSubmit() {
-    console.log(activity);
-
     createOrEdit(activity);
   }
 

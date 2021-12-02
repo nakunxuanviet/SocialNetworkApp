@@ -43,7 +43,6 @@ namespace SocialNetwork.Infrastructure
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }
@@ -51,6 +50,7 @@ namespace SocialNetwork.Infrastructure
         public static IServiceCollection AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepositoryBase<>), typeof(EfRepositoryBase<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IRequestManager, RequestManager>(); //Idempotency
 
             return services;

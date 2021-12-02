@@ -16,7 +16,7 @@ namespace SocialNetwork.Domain.SeedWork
 
         public override string ToString() => Name;
 
-        public static IEnumerable<T> GetAll<T>() where T : Enumeration =>
+        public static IEnumerable<T> List<T>() where T : Enumeration =>
             typeof(T).GetFields(BindingFlags.Public |
                                 BindingFlags.Static |
                                 BindingFlags.DeclaredOnly)
@@ -58,7 +58,7 @@ namespace SocialNetwork.Domain.SeedWork
 
         private static T Parse<T, K>(K value, string description, Func<T, bool> predicate) where T : Enumeration
         {
-            var matchingItem = GetAll<T>().FirstOrDefault(predicate);
+            var matchingItem = List<T>().FirstOrDefault(predicate);
 
             if (matchingItem == null)
                 throw new InvalidOperationException($"'{value}' is not a valid {description} in {typeof(T)}");

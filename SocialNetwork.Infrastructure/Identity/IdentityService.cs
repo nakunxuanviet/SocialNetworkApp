@@ -6,6 +6,7 @@ using SocialNetwork.Domain.Entities.ApplicationUsers;
 using SocialNetwork.Domain.Shared.ActionResult;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Identity
@@ -26,9 +27,17 @@ namespace SocialNetwork.Infrastructure.Identity
             return _context.HttpContext.User.FindFirst("sub").Value;
         }
 
+        public string GetUserId()
+        {
+            var user = _context.HttpContext.User;
+            return user == null ? "" : user.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
+        }
+
         public string GetUserName()
         {
             return _context.HttpContext.User.Identity.Name;
+            //var user = _context.HttpContext.User;
+            //return user == null ? "" : user.FindFirstValue(ClaimTypes.Name) ?? "";
         }
 
         public async Task<string> GetUserNameAsync(string userId)
@@ -36,6 +45,11 @@ namespace SocialNetwork.Infrastructure.Identity
             var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
 
             return user.UserName;
+        }
+
+        public bool IsAuthenticated()
+        {
+            return _context.HttpContext.User.Identity.IsAuthenticated;
         }
 
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)

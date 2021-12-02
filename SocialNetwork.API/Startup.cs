@@ -30,9 +30,11 @@ namespace SocialNetwork.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddApplication()
+            services
+                .AddApplication()
                 .AddCustomController()
-                .AddAndConfigureLocalization()
+                //.AddAndConfigureLocalization()
+                .AddCustomLocalization()
                 .AddRedisCache(Configuration)
                 //.AddRepoPatternCachingHangfire(Configuration)
                 //.AddMemoryCache()
@@ -62,6 +64,7 @@ namespace SocialNetwork.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
+            app.UseCustomRequestLocaliation();      // ver2
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -74,7 +77,7 @@ namespace SocialNetwork.API
 
             //app.UseRewriter(new RewriteOptions().AddRedirectToHttpsPermanent());
 
-            app.UseRequestLocalization();
+            //app.UseRequestLocalization();          // ver1
 
             app.UseSerilogRequestLogging();
 
