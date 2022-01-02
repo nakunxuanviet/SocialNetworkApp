@@ -53,11 +53,11 @@ namespace SocialNetwork.API.Controllers.V1
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<AccountInformationVm>> Login([FromBody] LoginDto loginDto)
+        public async Task<ActionResult<AccountInfoResponse>> Login([FromBody] LoginRequest request)
         {
             var user = await _userManager.Users
                 //.Include(p => p.Photos)
-                .FirstOrDefaultAsync(x => x.Email == loginDto.Email);
+                .FirstOrDefaultAsync(x => x.Email == request.Email);
 
             if (user == null) return Unauthorized("Invalid email");
 
@@ -65,32 +65,31 @@ namespace SocialNetwork.API.Controllers.V1
 
             if (!user.EmailConfirmed) return Unauthorized("Email not confirmed");
 
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
 
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                //await SetRefreshToken(user);
-                var userObj = await SetRefreshTokenAndCreateUser(user);
-
-                // Save token
-                await _userManager.SetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken, userObj.AccessToken);
-                return userObj;
+                return Unauthorized("Invalid password");
             }
 
-            return Unauthorized("Invalid password");
+            var userResult = await SetRefreshToken(user);
+
+            // Save token
+            await _userManager.SetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken, userResult.AccessToken);
+            return userResult;
         }
 
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<ActionResult<AccountInformationVm>> Register([FromBody] RegisterDto registerDto)
+        public async Task<ActionResult<AccountInfoResponse>> Register([FromBody] RegisterRequest request)
         {
-            if (await _userManager.Users.AnyAsync(x => x.Email == registerDto.Email))
+            if (await _userManager.Users.AnyAsync(x => x.Email == request.Email))
             {
                 ModelState.AddModelError("email", "Email taken");
                 return ValidationProblem();
             }
-            if (await _userManager.Users.AnyAsync(x => x.UserName == registerDto.Username))
+            if (await _userManager.Users.AnyAsync(x => x.UserName == request.Username))
             {
                 ModelState.AddModelError("username", "Username taken");
                 return ValidationProblem();
@@ -98,13 +97,13 @@ namespace SocialNetwork.API.Controllers.V1
 
             var user = new ApplicationUser
             {
-                DisplayName = registerDto.DisplayName,
-                Email = registerDto.Email,
-                UserName = registerDto.Username,
+                DisplayName = request.DisplayName,
+                Email = request.Email,
+                UserName = request.Username,
                 IsAdmin = false
             };
 
-            var result = await _userManager.CreateAsync(user, registerDto.Password);
+            var result = await _userManager.CreateAsync(user, request.Password);
 
             if (!result.Succeeded) return BadRequest("Problem registering user");
 
@@ -174,19 +173,19 @@ namespace SocialNetwork.API.Controllers.V1
         [MapToApiVersion("1.0")]
         [Authorize]
         [HttpGet]
-        public async Task<ActionResult<AccountInformationVm>> GetCurrentUser()
+        public async Task<ActionResult<AccountInfoResponse>> GetCurrentUser()
         {
             var user = await _userManager.Users
                 //.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.Email == User.FindFirstValue(ClaimTypes.Email));
             //await SetRefreshToken(user);
-            return await SetRefreshTokenAndCreateUser(user);
+            return await SetRefreshToken(user);
         }
 
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("fbLogin")]
-        public async Task<ActionResult<AccountInformationVm>> FacebookLogin(string accessToken)
+        public async Task<ActionResult<AccountInfoResponse>> FacebookLogin(string accessToken)
         {
             var fbVerifyKeys = _config["Facebook:AppId"] + "|" + _config["Facebook:AppSecret"];
 
@@ -209,7 +208,7 @@ namespace SocialNetwork.API.Controllers.V1
                 //.Include(p => p.Photos)
                 .FirstOrDefaultAsync(x => x.UserName == username);
 
-            if (user != null) return await SetRefreshTokenAndCreateUser(user);
+            if (user != null) return await SetRefreshToken(user);
 
             user = new ApplicationUser
             {
@@ -233,13 +232,13 @@ namespace SocialNetwork.API.Controllers.V1
             if (!result.Succeeded) return BadRequest("Problem creating user account");
 
             //await SetRefreshToken(user);
-            return await SetRefreshTokenAndCreateUser(user);
+            return await SetRefreshToken(user);
         }
 
         [MapToApiVersion("1.0")]
         [Authorize]
         [HttpPost("refresh-token")]
-        public async Task<ActionResult<AccountInformationVm>> RefreshToken()
+        public async Task<ActionResult<AccountInfoResponse>> RefreshToken()
         {
             var refreshToken = Request.Cookies["refreshToken"];
             var user = await _userManager.Users
@@ -253,15 +252,32 @@ namespace SocialNetwork.API.Controllers.V1
 
             if (oldToken != null && !oldToken.IsActive) return Unauthorized();
 
-            return await SetRefreshTokenAndCreateUser(user);
+            return await SetRefreshToken(user);
+        }
+
+        [HttpPost("revoke-token")]
+        public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest request)
+        {
+            // accept token from request body or cookie
+            var token = request.Token ?? Request.Cookies["refreshToken"];
+
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new { message = "Token is required" });
+
+            var response = await _tokenService.RevokeToken(token, IpAddress());
+
+            if (!response)
+                return NotFound(new { message = "Token not found" });
+
+            return Ok(new { message = "Token revoked" });
         }
 
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout([FromBody] LogoutModel model)
+        public async Task<IActionResult> Logout([FromBody] LogoutRequest request)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
             await _userManager.RemoveAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.AccessToken);
 
             // Delete authentication cookie
@@ -279,14 +295,14 @@ namespace SocialNetwork.API.Controllers.V1
         /// <summary>
         /// Gửi email đến user để cài đặt lại mật khẩu
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [MapToApiVersion("1.0")]
         [AllowAnonymous]
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] EmailAccountDto model)
+        public async Task<IActionResult> ResetPassword([FromBody] EmailAccountRequest request)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == model.Email);
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Email == request.Email);
 
             var jwt = _tokenService.CreateResetPasswordToken();
             await _userManager.SetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.ResetPasswordToken, jwt);
@@ -305,30 +321,30 @@ namespace SocialNetwork.API.Controllers.V1
         /// <summary>
         /// Cài đặt mật khẩu mới
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="request"></param>
         /// <returns></returns>
         [MapToApiVersion("1.0")]
         [HttpPost("reset-new-password")]
         [AllowAnonymous]
-        public async Task<IActionResult> ResetNewPassword([FromBody] ResetPasswordDto model)
+        public async Task<IActionResult> ResetNewPassword([FromBody] ResetPasswordRequest request)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == model.UserId);
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == request.UserId);
             if (user == null)
             {
                 return NotFound("Account not exist");
             }
 
             var tokenDb = await _userManager.GetAuthenticationTokenAsync(user, Constants.LoginProviderDefault, Constants.ResetPasswordToken);
-            if (tokenDb == null || tokenDb != model.Token)
+            if (tokenDb == null || tokenDb != request.Token)
             {
                 return NotFound("Token not exist");
             }
 
-            if (!_tokenService.IsValidResetPasswordToken(model.Token))
+            if (!_tokenService.IsValidResetPasswordToken(request.Token))
             {
                 return NotFound("Token not exist");
             }
-            var result = await _userManager.AddPasswordAsync(user, model.NewPassword);
+            var result = await _userManager.AddPasswordAsync(user, request.NewPassword);
             if (result.Errors.Any())
                 throw new IdentityValidationException("Reset password not success");
 
@@ -336,33 +352,33 @@ namespace SocialNetwork.API.Controllers.V1
             return Ok("Reset password success");
         }
 
-        private async Task SetRefreshToken(ApplicationUser user)
+        private async Task<AccountInfoResponse> SetRefreshToken(ApplicationUser user)
         {
-            var refreshToken = _tokenService.GenerateRefreshToken();
-
-            user.RefreshTokens.Add(refreshToken);
-            await _userManager.UpdateAsync(user);
+            var refreshToken = await _tokenService.GenerateRefreshToken(user, IpAddress());
 
             var cookieOptions = new CookieOptions
             {
                 HttpOnly = true,
                 Expires = DateTime.UtcNow.AddDays(7)
             };
-
             Response.Cookies.Append("refreshToken", refreshToken.Token, cookieOptions);
-        }
 
-        private async Task<AccountInformationVm> SetRefreshTokenAndCreateUser(ApplicationUser user)
-        {
-            await SetRefreshToken(user);
-
-            return new AccountInformationVm
+            return new AccountInfoResponse
             {
                 Username = user.UserName,
                 DisplayName = user.DisplayName,
                 //Image = user?.Photos?.FirstOrDefault(x => x.IsMain)?.Url,
-                AccessToken = _tokenService.CreateToken(user)
+                AccessToken = _tokenService.CreateJwtToken(user),
+                RefreshToken = refreshToken.Token
             };
+        }
+
+        private string IpAddress()
+        {
+            if (Request.Headers.ContainsKey("X-Forwarded-For"))
+                return Request.Headers["X-Forwarded-For"];
+            else
+                return HttpContext.Connection.RemoteIpAddress.MapToIPv4().ToString();
         }
     }
 }

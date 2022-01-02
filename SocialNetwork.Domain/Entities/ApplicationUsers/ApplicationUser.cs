@@ -3,6 +3,7 @@ using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.SeedWork;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SocialNetwork.Domain.Entities.ApplicationUsers
 {
@@ -12,6 +13,7 @@ namespace SocialNetwork.Domain.Entities.ApplicationUsers
         public string Bio { get; set; }
         public bool IsAdmin { get; set; }
 
+        [JsonIgnore]
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
         public bool IsDeleted { get; set; }

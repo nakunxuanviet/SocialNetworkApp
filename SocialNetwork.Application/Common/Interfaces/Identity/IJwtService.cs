@@ -1,13 +1,16 @@
 ﻿using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Entities.ApplicationUsers;
+using System.Threading.Tasks;
 
 namespace SocialNetwork.Application.Common.Interfaces
 {
     public interface IJwtService
     {
-        string CreateToken(ApplicationUser user);
+        string CreateJwtToken(ApplicationUser user);
 
-        RefreshToken GenerateRefreshToken();
+        Task<RefreshToken> GenerateRefreshToken(ApplicationUser user, string ipAddress);
+
+        Task<bool> RevokeToken(string token, string ipAddress);
 
         string CreateWithRoles(ApplicationUser user);
 

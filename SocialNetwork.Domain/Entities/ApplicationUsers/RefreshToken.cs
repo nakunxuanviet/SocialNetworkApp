@@ -13,5 +13,10 @@ namespace SocialNetwork.Domain.Entities.Accounts
         public bool IsExpired => DateTime.UtcNow >= Expires;
         public DateTime? Revoked { get; set; }
         public bool IsActive => Revoked == null && !IsExpired;
+
+        public DateTime Created { get; set; }
+        public string CreatedByIp { get; set; }
+        public string RevokedByIp { get; set; }
+        //public string ReplacedByToken { get; set; }
     }
 }

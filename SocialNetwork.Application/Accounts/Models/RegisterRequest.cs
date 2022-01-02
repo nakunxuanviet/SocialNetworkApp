@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SocialNetwork.Application.Accounts.Models
 {
-    public class RegisterDto
+    public class RegisterRequest
     {
         [Required]
         public string DisplayName { get; set; }

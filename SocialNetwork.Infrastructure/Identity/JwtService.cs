@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SocialNetwork.Application.Accounts.Models;
@@ -18,15 +21,17 @@ namespace SocialNetwork.Infrastructure.Identity
         private readonly JwtOptions _options;
         private readonly JwtResetPasswordOptions _rsOptions;
         private readonly JwtSecurityTokenHandler _jwtSecurityTokenHandler;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtService(IOptions<JwtOptions> options, IOptions<JwtResetPasswordOptions> rsOptions)
+        public JwtService(IOptions<JwtOptions> options, IOptions<JwtResetPasswordOptions> rsOptions, UserManager<ApplicationUser> userManager)
         {
             _options = options.Value;
             _rsOptions = rsOptions.Value;
             _jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            _userManager = userManager;
         }
 
-        public string CreateToken(ApplicationUser user)
+        public string CreateJwtToken(ApplicationUser user)
         {
             var claims = new List<Claim>
             {
@@ -55,12 +60,44 @@ namespace SocialNetwork.Infrastructure.Identity
             return _jwtSecurityTokenHandler.WriteToken(token);
         }
 
-        public RefreshToken GenerateRefreshToken()
+        public async Task<RefreshToken> GenerateRefreshToken(ApplicationUser user, string ipAddress)
         {
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
-            return new RefreshToken { Token = Convert.ToBase64String(randomNumber) };
+
+            var refreshToken = new RefreshToken 
+            { 
+                Token = Convert.ToBase64String(randomNumber),
+                Revoked = DateTime.UtcNow,
+                RevokedByIp = ipAddress,
+
+            };
+            user.RefreshTokens.Add(refreshToken);
+            await _userManager.UpdateAsync(user);
+
+            return refreshToken;
+        }
+
+        public async Task<bool> RevokeToken(string f5Token, string ipAddress)
+        {
+            var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == f5Token));
+
+            // return false if no user found with token
+            if (user == null) return false;
+
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == f5Token);
+
+            // return false if token is not active
+            if (!refreshToken.IsActive) return false;
+
+            // revoke token and save
+            refreshToken.Revoked = DateTime.UtcNow;
+            refreshToken.RevokedByIp = ipAddress;
+
+            await _userManager.UpdateAsync(user);
+
+            return true;
         }
 
         public string CreateWithRoles(ApplicationUser user)
