@@ -13,6 +13,7 @@ using SocialNetwork.Application.Accounts.Models;
 using SocialNetwork.Application.Common.Interfaces;
 using SocialNetwork.Domain.Entities.Accounts;
 using SocialNetwork.Domain.Entities.ApplicationUsers;
+using SocialNetwork.Domain.Extensions;
 
 namespace SocialNetwork.Infrastructure.Identity
 {
@@ -62,6 +63,18 @@ namespace SocialNetwork.Infrastructure.Identity
 
         public async Task<RefreshToken> GenerateRefreshToken(ApplicationUser user, string ipAddress)
         {
+            //using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
+            //{
+            //    var randomBytes = new byte[64];
+            //    rngCryptoServiceProvider.GetBytes(randomBytes);
+            //    return new RefreshToken
+            //    {
+            //        Token = Convert.ToBase64String(randomBytes),
+            //        Expires = DateTime.UtcNow.AddDays(7),
+            //        CreatedAt = DateTime.UtcNow,
+            //        CreatedByIp = ipAddress
+            //    };
+            //}
             var randomNumber = new byte[32];
             using var rng = RandomNumberGenerator.Create();
             rng.GetBytes(randomNumber);
@@ -69,24 +82,31 @@ namespace SocialNetwork.Infrastructure.Identity
             var refreshToken = new RefreshToken 
             { 
                 Token = Convert.ToBase64String(randomNumber),
-                Revoked = DateTime.UtcNow,
-                RevokedByIp = ipAddress,
-
+                CreatedAt = DateTime.UtcNow,
+                RevokedByIp = ipAddress
             };
+
+            // add new refresh token
             user.RefreshTokens.Add(refreshToken);
+
+            // remove old inactive refresh tokens from user based on TTL in app settings
+            user.RefreshTokens.RemoveAll(x =>
+                !x.IsActive &&
+                x.CreatedAt.AddDays(6) <= DateTime.UtcNow);
+
             await _userManager.UpdateAsync(user);
 
             return refreshToken;
         }
 
-        public async Task<bool> RevokeToken(string f5Token, string ipAddress)
+        public async Task<bool> RevokeToken(string token, string ipAddress)
         {
-            var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == f5Token));
+            var user = _userManager.Users.SingleOrDefault(u => u.RefreshTokens.Any(t => t.Token == token));
 
             // return false if no user found with token
             if (user == null) return false;
 
-            var refreshToken = user.RefreshTokens.Single(x => x.Token == f5Token);
+            var refreshToken = user.RefreshTokens.Single(x => x.Token == token);
 
             // return false if token is not active
             if (!refreshToken.IsActive) return false;

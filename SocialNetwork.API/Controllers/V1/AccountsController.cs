@@ -250,11 +250,16 @@ namespace SocialNetwork.API.Controllers.V1
 
             var oldToken = user.RefreshTokens.SingleOrDefault(x => x.Token == refreshToken);
 
-            if (oldToken != null && !oldToken.IsActive) return Unauthorized();
+            if (oldToken != null && !oldToken.IsActive) return Unauthorized("Invalid token");
 
             return await SetRefreshToken(user);
         }
 
+        /// <summary>
+        /// Thu hồi token
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         [HttpPost("revoke-token")]
         public async Task<IActionResult> RevokeToken([FromBody] RevokeTokenRequest request)
         {
