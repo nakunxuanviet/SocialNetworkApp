@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SocialNetwork.Infrastructure.Repository
@@ -45,5 +46,15 @@ namespace SocialNetwork.Infrastructure.Repository
         public void AddRange(IEnumerable<T> entities) => _dbSet.AddRange(entities);
 
         public void DeleteRange(IEnumerable<T> entities) => _dbSet.RemoveRange(entities);
+
+        public async Task<IReadOnlyList<T>> ListAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
+        }
+
+        public async Task<bool> Exists(Expression<Func<T, bool>> expression)
+        {
+            return await _dbSet.AsNoTracking().AnyAsync(expression);
+        }
     }
 }
